@@ -1,0 +1,12 @@
+detector_params.inp
+*.fits
+*.root
+*.mac
+CMakeCache.txt
+CMakeFiles/*
+CMakeLists.txt
+CMakeScripts/*
+Debug/*
+extp_lad.build/*
+extp_lad.xcodeproj/*
+*.cmake
