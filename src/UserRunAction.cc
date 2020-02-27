@@ -36,14 +36,16 @@ void UserRunAction::BeginOfRunAction(const G4Run* run)
     G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetFirstNtupleId(1);
-    
-    if (IsMaster()){
-        analysisManager->CreateNtuple("Keyword", "Keyword");
-        analysisManager->CreateNtupleDColumn("RunID");
-        analysisManager->CreateNtupleDColumn("NumberOfEvents");
-        analysisManager->FinishNtuple();
-    }
-    else
+    // Ntuple merging (only for Geant v. 4.10.03 or higher)
+    analysisManager->SetNtupleMerging(true);
+
+//    if (IsMaster()){
+//        analysisManager->CreateNtuple("Keyword", "Keyword");
+//        analysisManager->CreateNtupleDColumn("RunID");
+//        analysisManager->CreateNtupleDColumn("NumberOfEvents");
+//        analysisManager->FinishNtuple();
+//    }
+//    else
     {
         analysisManager->CreateNtuple("Events", "Events");
         analysisManager->CreateNtupleDColumn("EventID");
@@ -67,9 +69,9 @@ void UserRunAction::BeginOfRunAction(const G4Run* run)
         // The run ID is printed at the beginning of each master run
         G4cout << "INFORMATION: Run No. " << run -> GetRunID() << " start." << G4endl;
         fTimer->Start();
-        analysisManager->FillNtupleDColumn(0, run->GetRunID());
-        analysisManager->FillNtupleDColumn(1, run->GetNumberOfEventToBeProcessed());
-        analysisManager->AddNtupleRow();
+//        analysisManager->FillNtupleDColumn(0, run->GetRunID());
+//        analysisManager->FillNtupleDColumn(1, run->GetNumberOfEventToBeProcessed());
+//        analysisManager->AddNtupleRow();
     }
 }
 

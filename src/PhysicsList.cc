@@ -4,7 +4,10 @@
 #include "G4PhysicalConstants.hh"
 
 #include "G4EmLivermorePhysics.hh"
+
 #include "G4DecayPhysics.hh"
+#include "G4RadioactiveDecayPhysics.hh"
+
 #include "G4HadronElasticPhysics.hh"
 #include "G4HadronPhysicsFTFP_BERT.hh"
 #include "G4HadronPhysicsQGSP_BERT.hh"
@@ -20,10 +23,11 @@ fDecPhysicsList(0)
 {
     SetVerboseLevel(0);
     // Default cut value  (1.0 mm is the Geant4 default)
-    defaultCutValue = 10*um;
+    defaultCutValue = 100*um;
     
     // Decay physics and all particles
     fDecPhysicsList = new G4DecayPhysics(0);
+    fRadioDecPhysicsList = new G4RadioactiveDecayPhysics(0);
     
     // EM physics
     fEmPhysicsList = new G4EmLivermorePhysics(0);
@@ -31,7 +35,8 @@ fDecPhysicsList(0)
     // Hadronic physics (vector of processes)
     fHadronPhys.push_back( new G4HadronElasticPhysics(0));
     fHadronPhys.push_back( new G4HadronPhysicsFTFP_BERT(0));
-    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BERT(0));
+//    fHadronPhys.push_back( new G4HadronPhysicsQGSP_BERT(0));
+    
     fHadronPhys.push_back( new G4StoppingPhysics(0));
     fHadronPhys.push_back( new G4IonPhysics(0));
     fHadronPhys.push_back( new G4NeutronTrackingCut(0));
@@ -50,6 +55,7 @@ PhysicsList::~PhysicsList()
 void PhysicsList::ConstructParticle()
 {
     fDecPhysicsList->ConstructParticle();
+    fRadioDecPhysicsList->ConstructParticle();
 }
 
 
@@ -67,6 +73,7 @@ void PhysicsList::ConstructProcess()
     }
     // Decay physics list
     fDecPhysicsList->ConstructProcess();
+    fRadioDecPhysicsList->ConstructProcess();
 }
 
 

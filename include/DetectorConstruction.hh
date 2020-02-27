@@ -90,33 +90,43 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double GetServicemoduleSide()             {return servicemodule_side;};
 		G4double GetServicemoduleDiameter()         {return servicemodule_thick;};
 		G4double GetBusDistance()                   {return bus_distance;};
-		
+        G4double GetSolarPanelSideX()               {return solarpanel_side_x;};
+        G4double GetSolarPanelSideY()               {return solarpanel_side_y;};
+        G4double GetSolarPanelThick()               {return solarpanel_thick;};
+        G4double GetOpticalBenchCoverDiameter()     {return opticalbenchcover_diameter;};
+        G4double GetOpticalBenchCoverThick()        {return opticalbenchcover_thick;};
+        G4double GetSunshadeSideX()                 {return sunshade_side_x;};
+        G4double GetSunshadeSideY()                 {return sunshade_side_y;};
+        G4double GetSunshadeThick()                 {return sunshade_thick;};
+
+
 		// Methods to get the flags
 		G4double GetFlagSatellitebus() 				{return flag_satellitebus;};
-		G4double GetFlagDummypanels() 				{return flag_dummypanels;};
 
 		// Methods to get the materials
-		G4Material* GetSDDMaterial()        	    {return sddMaterial;};	
-		G4Material* GetCollMaterial() 	            {return collMaterial;};	
-		G4Material* GetThermalblanket1Material()   	{return thermalblanket1Material;};
-		G4Material* GetThermalblanket2Material()   	{return thermalblanket2Material;};
-		G4Material* GetCoatingMaterial()   	    	{return coatingMaterial;};
-		G4Material* GetDeadlayer1Material()   	    {return deadlayer1Material;};
-		G4Material* GetDeadlayer2Material()   	    {return deadlayer2Material;};
-		G4Material* GetDeadlayer3Material()   	    {return deadlayer3Material;};
-		G4Material* GetPcbsMaterial()               {return pcbsMaterial;};
-		G4Material* GetPcb1Material()               {return pcb1Material;};
-		G4Material* GetPcb2Material()               {return pcb2Material;};
-		G4Material* GetPcb3Material()               {return pcb3Material;};
-		G4Material* GetBack1Material()              {return back1Material;};
-		G4Material* GetBack2Material()              {return back2Material;};
-		G4Material* GetFrameMaterial()   	        {return frameMaterial;};
-		G4Material* GetSideframe1Material()   	    {return sideframe1Material;};
-		G4Material* GetSideframe2Material()   	    {return sideframe2Material;};
-		G4Material* GetOpticalbenchMaterial()       {return opticalbenchMaterial;};
-		G4Material* GetTowerMaterial()   			{return towerMaterial;};
-		G4Material* GetServicemoduleMaterial ()   	{return servicemoduleMaterial;};
-		G4Material* GetDummypanelsMaterial ()   	{return dummypanelsMaterial;};
+		G4Material* GetSDDMaterial()        	        {return sddMaterial;};
+		G4Material* GetCollMaterial() 	                {return collMaterial;};
+		G4Material* GetThermalblanket1Material()   	    {return thermalblanket1Material;};
+		G4Material* GetThermalblanket2Material()   	    {return thermalblanket2Material;};
+		G4Material* GetCoatingMaterial()   	    	    {return coatingMaterial;};
+		G4Material* GetDeadlayer1Material()   	        {return deadlayer1Material;};
+		G4Material* GetDeadlayer2Material()   	        {return deadlayer2Material;};
+		G4Material* GetDeadlayer3Material()   	        {return deadlayer3Material;};
+		G4Material* GetPcbsMaterial()                   {return pcbsMaterial;};
+		G4Material* GetPcb1Material()                   {return pcb1Material;};
+		G4Material* GetPcb2Material()                   {return pcb2Material;};
+		G4Material* GetPcb3Material()                   {return pcb3Material;};
+		G4Material* GetBack1Material()                  {return back1Material;};
+		G4Material* GetBack2Material()                  {return back2Material;};
+		G4Material* GetFrameMaterial()   	            {return frameMaterial;};
+		G4Material* GetSideframe1Material()   	        {return sideframe1Material;};
+		G4Material* GetSideframe2Material()   	        {return sideframe2Material;};
+		G4Material* GetOpticalbenchMaterial()           {return opticalbenchMaterial;};
+		G4Material* GetTowerMaterial()   			    {return towerMaterial;};
+		G4Material* GetServicemoduleMaterial ()   	    {return servicemoduleMaterial;};
+        G4Material* GetSolarPanelMaterial ()            {return solarpanelMaterial;};
+        G4Material* GetOpticalBenchCoverMaterial ()    {return opticalbenchcoverMaterial;};
+        G4Material* GetSunshadeMaterial ()              {return sunshadeMaterial;};
 
 		// Set methods
 		// Method to set the world dimensions
@@ -164,19 +174,27 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetSideframe2Width(G4double sideframewidth) {sideframe2_width = sideframewidth;};
 
 	    // Methods to set the bus dimensions
-		void SetOpticalbenchSide(G4double  opticalbenchside)   {opticalbench_side = opticalbenchside;};
-		void SetOpticalbenchThick(G4double opticalbenchthick)  {opticalbench_thick = opticalbenchthick;};
-	    void SetTowerHeight(G4double towerheight)              {tower_height = towerheight;};
-		void SetTowerDiameter(G4double towerdiameter)          {tower_diameter = towerdiameter;};
-		void SetServicemoduleSide(G4double  servicemoduleside) {servicemodule_side = servicemoduleside;};
-		void SetServicemoduleThick(G4double servicemodulethick){servicemodule_thick = servicemodulethick;};
+        void SetOpticalbenchSide(G4double  opticalbenchside)        {opticalbench_side = opticalbenchside;};
+        void SetOpticalbenchThick(G4double opticalbenchthick)       {opticalbench_thick = opticalbenchthick;};
+        void SetTowerHeight(G4double towerheight)                   {tower_height = towerheight;};
+        void SetTowerDiameter(G4double towerdiameter)               {tower_diameter = towerdiameter;};
+        void SetServicemoduleSide(G4double  servicemoduleside)      {servicemodule_side = servicemoduleside;};
+        void SetServicemoduleThick(G4double servicemodulethick)     {servicemodule_thick = servicemodulethick;};
+        void SetSolarPanelSideX(G4double  spsidex)                  {solarpanel_side_x = spsidex;};
+        void SetSolarPanelSideY(G4double  spsidey)                  {solarpanel_side_y = spsidey;};
+        void SetSolarPanelThick(G4double  spthick)                  {solarpanel_thick = spthick;};
+        void SetOpticalBenchCoverDiameter(G4double obcdiameter)     {opticalbenchcover_diameter = obcdiameter;};
+        void SetOpticalBenchCoverThick(G4double obcthick)           {opticalbenchcover_thick = obcthick;};
+        void SetSunshadeSideX(G4double  sunsidex)                   {sunshade_side_x = sunsidex;};
+        void SetSunshadeSideY(G4double  sunsidey)                   {sunshade_side_y = sunsidey;};
+        void SetSunshadeThick(G4double  sunthick)                   {sunshade_thick = sunthick;};
+
+    
 		void SetBusDistance(G4double busdistance)              {bus_distance = busdistance;};
 
 		// Method to activate the bus
 		void SetFlagSatellitebus(G4bool flag)					{flag_satellitebus = flag;};
 		
-		// Method to activate the dummy panels
-		void SetFlagDummypanels(G4bool flag)					{flag_dummypanels = flag;};
 		
         // Methods to set the number of pixels
         void SetPixelX(G4int p)                 {pixel_x = p;}
@@ -203,7 +221,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		void SetOpticalbenchMaterial 		(G4String);     
 		void SetTowerMaterial               (G4String);     
 		void SetServicemoduleMaterial       (G4String);     
-		void SetDummypanelsMaterial         (G4String);     
+        void SetSolarPanelMaterial          (G4String);
+        void SetOpticalBenchCoverMaterial   (G4String);
+        void SetSunshadeMaterial            (G4String);
 
 	    // Print a list of parameters
 		void PrintParameters();
@@ -248,7 +268,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4LogicalVolume* opticalbench_log;
 		G4LogicalVolume* tower_log;
 		G4LogicalVolume* servicemodule_log;
-		G4LogicalVolume* dummypanels_log;
+        G4LogicalVolume* solarpanel_log;
+        G4LogicalVolume* opticalbenchcover_log;
+        G4LogicalVolume* sunshade_log;
+
 
 		// Parameterisations
 		G4VPVParameterisation* sddParam;
@@ -301,11 +324,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4VPhysicalVolume* opticalbench_phys;
 		G4VPhysicalVolume* tower_phys;
 		G4VPhysicalVolume* servicemodule_phys;
-		G4VPhysicalVolume* dummypanel1_phys;
-		G4VPhysicalVolume* dummypanel2_phys;
-		G4VPhysicalVolume* dummypanel3_phys;
-		G4VPhysicalVolume* dummypanel4_phys;
-		G4VPhysicalVolume* dummypanel5_phys;
+        G4VPhysicalVolume* solarpanel1_phys;
+        G4VPhysicalVolume* solarpanel2_phys;
+        G4VPhysicalVolume* opticalbenchcover_phys;
+        G4VPhysicalVolume* sunshade_phys;
 
 		// World dimensions
 		G4double worldSide;
@@ -351,6 +373,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double sideframe1_width;
 		G4double sideframe2_width;
 
+    
+    
+    
 		// Bus dimensions
 		G4double opticalbench_side;
 		G4double opticalbench_thick;
@@ -359,8 +384,15 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4double servicemodule_side;
 		G4double servicemodule_thick;
 		G4double bus_distance;
-				
-		
+        G4double solarpanel_side_x;
+        G4double solarpanel_side_y;
+        G4double solarpanel_thick;
+        G4double opticalbenchcover_diameter;
+        G4double opticalbenchcover_thick;
+        G4double sunshade_side_x;
+        G4double sunshade_side_y;
+        G4double sunshade_thick;
+
 		// Materials
 		G4Material* defaultMaterial;
 		G4Material*	sddMaterial;
@@ -383,11 +415,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4Material* opticalbenchMaterial;
 		G4Material* towerMaterial;
 		G4Material* servicemoduleMaterial;
-		G4Material* dummypanelsMaterial;
-		
+        G4Material* solarpanelMaterial;
+        G4Material* opticalbenchcoverMaterial;
+        G4Material* sunshadeMaterial;
+
 		// Flags
 		G4bool flag_satellitebus;
-		G4bool flag_dummypanels;
     
         // Pixelisation
         G4int pixel_x;

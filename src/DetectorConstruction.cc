@@ -76,7 +76,9 @@ DetectorConstruction::DetectorConstruction()
 	opticalbench_log(0),
 	tower_log(0),
 	servicemodule_log(0),
-	dummypanels_log(0),
+//    solarpanel_log(0),
+    opticalbenchcover_log(0),
+    sunshade_log(0),
 	sddParam(0),
 	collParam(0),
 	coatingParam(0),
@@ -120,11 +122,10 @@ DetectorConstruction::DetectorConstruction()
 	opticalbench_phys(0),
 	tower_phys(0),
 	servicemodule_phys(0),
-	dummypanel1_phys(0),
-	dummypanel2_phys(0),
-	dummypanel3_phys(0),
-	dummypanel4_phys(0),
-	dummypanel5_phys(0),
+    solarpanel1_phys(0),
+    solarpanel2_phys(0),
+    opticalbenchcover_phys(0),
+    sunshade_phys(0),
 	defaultMaterial(0)
 {
 	// Size of the experimental hall
@@ -217,6 +218,25 @@ void DetectorConstruction::DefineParameters()
 	G4double sm_side= read *cm;
 	config.readInto(read, "SERVICEMODULE_THICK", 95.);
 	G4double sm_thickness= read *cm;
+    config.readInto(read, "SOLARPANEL_SIDE_X", 750.);
+    G4double sp_sx = read *cm;
+    config.readInto(read, "SOLARPANEL_SIDE_Y", 160.);
+    G4double sp_sy= read *cm;
+    config.readInto(read, "SOLARPANEL_THICK", 2.);
+    G4double sp_thickness = read *cm;
+    config.readInto(read, "OPTICALBCOVER_DIAMETER", 247.);
+    G4double obc_diameter = read *cm;
+    config.readInto(read, "OPTICALBCOVER_THICK", 3.);
+    G4double obc_thick = read *cm;
+    config.readInto(read, "SUNSHADE_SIDE_X", 615.);
+    G4double snsh_sx = read *cm;
+    config.readInto(read, "SUNSHADE_SIDE_Y", 320.);
+    G4double snsh_sy= read *cm;
+    config.readInto(read, "SUNSHADE_THICK", 2.);
+    G4double snsh_thickness = read *cm;
+
+
+
 	config.readInto(read, "BUS_DISTANCE", 2.6);
 	G4double b_distance= read *m;
     config.readInto(read, "PIXEL_X", 112.);
@@ -246,12 +266,20 @@ void DetectorConstruction::DefineParameters()
 	SetFrameThick(frame_thickness) ;
 	SetSideframe1Width(sideframe1_w) ;
 	SetSideframe2Width(sideframe2_w) ;
-	SetOpticalbenchSide(ob_side);
-	SetOpticalbenchThick(ob_thickness);
-	SetTowerHeight(t_height) ;
-	SetTowerDiameter(t_diameter) ;
-	SetServicemoduleSide(sm_side);
-	SetServicemoduleThick(sm_thickness);
+    SetOpticalbenchSide(ob_side);
+    SetOpticalbenchThick(ob_thickness);
+    SetTowerHeight(t_height) ;
+    SetTowerDiameter(t_diameter) ;
+    SetServicemoduleSide(sm_side);
+    SetServicemoduleThick(sm_thickness);
+    SetSolarPanelSideX(sp_sx);
+    SetSolarPanelSideY(sp_sy);
+    SetSolarPanelThick(sp_thickness);
+    SetOpticalBenchCoverDiameter(obc_diameter);
+    SetOpticalBenchCoverThick(obc_thick);
+    SetSunshadeSideX(snsh_sx);
+    SetSunshadeSideY(snsh_sy);
+    SetSunshadeThick(snsh_thickness);
 	SetBusDistance(b_distance) ;
     SetPixelX(xpix);
     SetPixelY(ypix);
@@ -300,15 +328,18 @@ void DetectorConstruction::DefineParameters()
     SetTowerMaterial(readm);
 	config.readInto<G4String>(readm, "SERVICEMODULE_MATERIAL", "EffectiveBusAluminiumSolid");
     SetServicemoduleMaterial(readm);
-	config.readInto<G4String>(readm, "DUMMYPANELS_MATERIAL", "EffectiveDummyPanelSolid");
-    SetDummypanelsMaterial(readm);
+    config.readInto<G4String>(readm, "SOLARPANEL_MATERIAL", "EffectiveBusAluminiumSolid");
+    SetSolarPanelMaterial(readm);
+    config.readInto<G4String>(readm, "OPTICALBCOVER_MATERIAL", "EffectiveBusAluminiumSolid");
+    SetOpticalBenchCoverMaterial(readm);
+    config.readInto<G4String>(readm, "SUNSHADE_MATERIAL", "EffectiveBusAluminiumSolid");
+    SetSunshadeMaterial(readm);
+
 
 	// Booleans
 	G4bool readb;
 	config.readInto<G4bool>(readb, "FLAG_ACTIVATEBUS", true);
 	SetFlagSatellitebus(readb);
-	config.readInto<G4bool>(readb, "FLAG_ACTIVATEDUMMYPANELS", true);
-	SetFlagDummypanels(readb);
 	
 }
 
@@ -653,7 +684,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4double moduleSpacing_y = sdd_y + sideframe2_width;
 	G4double plate_x = moduleArray_x * sdd_x + (moduleArray_x + 1) * sideframe2_width;
 	G4double plate_y = moduleArray_y * sdd_y + (moduleArray_y + 1) * sideframe2_width;
-	G4cout << "Panel dimensions: x " << plate_x/cm << " cm; y " << plate_y/cm  << " cm" << G4endl;
+	G4cout << "Panel dimensions: x = " << plate_x/cm << " cm; y = " << plate_y/cm  << " cm" << G4endl;
     
     G4int nPixelPerModule  = pixelArray_x*pixelArray_y;
     G4cout << "Number of pixels per module: " << nPixelPerModule << "; "
@@ -708,6 +739,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 //									 nModules,    		// Number of chambers
                                      nPixels,    		// Number of chambers
 									 sddParam);   		// The parametrisation
+
 
 	// // . Collimator
 	// 
@@ -1293,14 +1325,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
 
+    
+    // 10. SATELLITE BUS
+
 	if (flag_satellitebus == true) {
-		// 10. Bus
 		// a. Optical bench
 		// Solid
 	    const G4double Z[2]= {0*cm, -opticalbench_thick};
 	    const G4double rInner[2]= {0*cm, 0*cm};
-	    const G4double rOuter[2]= {opticalbench_side*sqrt(3)/2., opticalbench_side*sqrt(3)/2.};
-	    G4Polyhedra* opticalbench_Polyhedra = new G4Polyhedra("opticalbench_Polyhedra",
+	    const G4double rOuter[2]= {opticalbench_side, opticalbench_side};
+	    G4Polyhedra* opticalbench_Ext_Polyhedra = new G4Polyhedra("opticalbench_Ext_Polyhedra",
 												0.*deg,
 												360.*deg,
 												6,
@@ -1308,17 +1342,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 												Z, 
 												rInner, 
 												rOuter);
+        
+        G4Tubs* opticalbench_Int_Tubs = new G4Tubs("opticalbench_Int_Tubs",
+                                                   0.,                        // inner radius
+                                                   tower_diameter/2.,         // outer radius
+                                                   opticalbench_thick,        // height
+                                                   0.0 * deg, 360.0 * deg);   // segment angles
+
+        G4VSolid* opticalbench_Boolean = new G4SubtractionSolid("opticalbench_Boolean", opticalbench_Ext_Polyhedra, opticalbench_Int_Tubs);
 		// Logical
-		opticalbench_log = new G4LogicalVolume(opticalbench_Polyhedra,
+		opticalbench_log = new G4LogicalVolume(opticalbench_Boolean,
 		                                       opticalbenchMaterial, "opticalbench_log", 0, 0, 0);
 	
 		// Physical
 		G4double opticalbenchPos_x = bus_distance;
 		G4double opticalbenchPos_y = 0*cm;
 		G4double opticalbenchPos_z = 0*cm ;
-	    G4RotationMatrix* opticalbenchRot = new G4RotationMatrix;  
-	    opticalbenchRot->rotateZ(30*deg); 
-		opticalbench_phys = new G4PVPlacement(opticalbenchRot,
+//        G4RotationMatrix* opticalbenchRot = new G4RotationMatrix;
+//        opticalbenchRot->rotateZ(22.5*deg);
+		opticalbench_phys = new G4PVPlacement(0,
 									          G4ThreeVector(opticalbenchPos_x, opticalbenchPos_y, opticalbenchPos_z),
 									          opticalbench_log,
 									          "opticalbench_phys", 
@@ -1326,7 +1368,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 									          false, 
 									          0);
 	
-		// b. Tower
+		// b. Tower (telescope tube)
 		// Solid
 	    G4double tower_wall = 1.5*cm;
 		G4VSolid* tower_Tubs = new G4Tubs("tower_Tubs", 
@@ -1348,7 +1390,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 									  experimentalHall_log, 
 									  false, 
 									  0);
-		// c. Service module
+        
+		// c. Service module (focal plane assembly)
 		// Solid
 	    const G4double Z_sm[2]= {0*cm, -servicemodule_thick};
 	    const G4double rInner_sm[2]= {50*cm, 50*cm};
@@ -1369,80 +1412,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		G4double servicemodulePos_x = bus_distance;
 		G4double servicemodulePos_y = 0*cm;
 		G4double servicemodulePos_z = -(opticalbench_thick + tower_height) ;
-	    G4RotationMatrix* servicemoduleRot = new G4RotationMatrix;  
-	    servicemoduleRot->rotateZ(30*deg); 
-		servicemodule_phys = new G4PVPlacement(servicemoduleRot,
-									          G4ThreeVector(servicemodulePos_x, servicemodulePos_y, servicemodulePos_z),
-									          servicemodule_log,
-									          "servicemodule_phys", 
-									          experimentalHall_log, 
-									          false, 
-									          0);
-	}
-	else if (flag_satellitebus == false)
-	{
-		// 10. Bus
-		// a. Optical bench
-		// Solid
-	    G4VSolid* opticalbench_Polyhedra = new G4Tubs("opticalbench_Polyhedra",
-												0.*cm,
-												0.000000001*cm,
-												0.000000001*cm,
-												0.0*deg, 360.0*deg);
-		// Logical
-		opticalbench_log = new G4LogicalVolume(opticalbench_Polyhedra,
-		                                       defaultMaterial, "opticalbench_log", 0, 0, 0);
-	
-		// Physical
-		G4double opticalbenchPos_x = bus_distance;
-		G4double opticalbenchPos_y = 0*cm;
-		G4double opticalbenchPos_z = 0*cm ;
-		opticalbench_phys = new G4PVPlacement(0,
-									          G4ThreeVector(opticalbenchPos_x, opticalbenchPos_y, opticalbenchPos_z),
-									          opticalbench_log,
-									          "opticalbench_phys", 
-									          experimentalHall_log, 
-									          false, 
-									          0);
-	
-		// b. Tower
-		// Solid
-		tower_diameter = 0.000000001*cm;
-	    G4double tower_wall = 0.000000001*cm;
-		G4VSolid* tower_Tubs = new G4Tubs("tower_Tubs", 
-										(tower_diameter-tower_wall)/2.,	 // inner radius 
-										tower_diameter/2.,	     // outer radius 
-										tower_height/2.,	             // height 
-										0.0 * deg, 360.0 * deg); // segment angles
-		// Logical
-		tower_log = new G4LogicalVolume(tower_Tubs,
-		                              defaultMaterial, "tower_log", 0, 0, 0);
-		// Physical
-		G4double towerPos_x = bus_distance;
-		G4double towerPos_y = 0*m;
-		G4double towerPos_z = 0*m;
-		tower_phys = new G4PVPlacement(0,
-									  G4ThreeVector(towerPos_x, towerPos_y, towerPos_z),
-									  tower_log,
-									  "tower_phys", 
-									  experimentalHall_log, 
-									  false, 
-									  0);
-		// c. Service module
-		// Solid
-	    G4VSolid* servicemodule_Polyhedra = new G4Tubs("servicemodule_Polyhedra",
-												0.*cm,
-												0.000000001*cm,
-												0.000000001*cm,
-												0.0*deg, 360.0*deg);
-		// Logical
-		servicemodule_log = new G4LogicalVolume(servicemodule_Polyhedra,
-		                                       defaultMaterial, "servicemodule_log", 0, 0, 0);
-	
-		// Physical
-		G4double servicemodulePos_x = bus_distance;
-		G4double servicemodulePos_y = 0*cm;
-		G4double servicemodulePos_z = 0*cm ;
+//        G4RotationMatrix* servicemoduleRot = new G4RotationMatrix;
+//        servicemoduleRot->rotateZ(30*deg);
 		servicemodule_phys = new G4PVPlacement(0,
 									          G4ThreeVector(servicemodulePos_x, servicemodulePos_y, servicemodulePos_z),
 									          servicemodule_log,
@@ -1450,144 +1421,94 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 									          experimentalHall_log, 
 									          false, 
 									          0);
+        
+        // d. Solar panels
+        // Solid
+        G4Box* solarpanel_Box = new G4Box("solarpanel_Box", solarpanel_side_x/2., solarpanel_side_y/2., solarpanel_thick/2.);
+        
+        // Logical
+        solarpanel_log = new G4LogicalVolume(solarpanel_Box,
+                                           solarpanelMaterial, "solarpanel_log", 0, 0, 0);
+        // Physical 1
+        G4double solarpanelGap = 118.2 *cm;
+        G4double solarpanelPos_x = bus_distance + tower_diameter/2 + solarpanelGap + solarpanel_side_x/2.;
+        G4double solarpanelPos_y = 0.*cm;
+        G4double solarpanelPos_z = - opticalbench_thick - tower_height/2.;
+        G4RotationMatrix* solarpanelRot = new G4RotationMatrix;
+        solarpanelRot->rotateX(90*deg);
+        
+        solarpanel1_phys = new G4PVPlacement(solarpanelRot,
+                                          G4ThreeVector(solarpanelPos_x, solarpanelPos_y, solarpanelPos_z),
+                                          solarpanel_log,
+                                          "solarpanel1_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+
+        // Physical 2
+        solarpanelPos_x = bus_distance -tower_diameter/2 - solarpanelGap - solarpanel_side_x/2.;
+        solarpanel2_phys = new G4PVPlacement(solarpanelRot,
+                                          G4ThreeVector(solarpanelPos_x, solarpanelPos_y, solarpanelPos_z),
+                                          solarpanel_log,
+                                          "solarpanel2_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+
+        
+        // e. Optical bench cover
+        // Solid
+        G4VSolid* opticalBenchCover_Tubs = new G4Tubs("opticalBenchCover_Tubs",
+                                          0.,     // inner radius
+                                          opticalbenchcover_diameter/2.,         // outer radius
+                                          opticalbenchcover_thick/2.,                 // height
+                                          0.0 * deg, 360.0 * deg); // segment angles
+        // Logical
+        opticalbenchcover_log = new G4LogicalVolume(opticalBenchCover_Tubs,
+                                        opticalbenchcoverMaterial, "opticalbenchcover_log", 0, 0, 0);
+        // Physical
+        G4double opticalbenchcoverPos_x = bus_distance;
+        G4double opticalbenchcoverPos_y = opticalbench_side*sqrt(5)/2. + opticalbenchcover_thick;
+        G4double opticalbenchcoverPos_z = opticalbenchcover_diameter/2. ;
+        G4RotationMatrix* opticalbenchcoverRot = new G4RotationMatrix;
+        opticalbenchcoverRot->rotateX(90*deg);
+        opticalbenchcover_phys = new G4PVPlacement(opticalbenchcoverRot,
+                                       G4ThreeVector(opticalbenchcoverPos_x, opticalbenchcoverPos_y, opticalbenchcoverPos_z),
+                                       opticalbenchcover_log,
+                                       "opticalbenchcover_phys",
+                                       experimentalHall_log,
+                                       false,
+                                       0);
+
+        // f. Sunshade
+        // Solid
+        G4Box* sunshade_Box = new G4Box("sunshade_Box", sunshade_side_x/2., sunshade_side_y/2., sunshade_thick/2.);
+                                        
+        // Logical
+        sunshade_log = new G4LogicalVolume(sunshade_Box,
+                                                    sunshadeMaterial, "sunshade_log", 0, 0, 0);
+        // Physical
+        G4double sunshadePos_x = bus_distance;
+        G4double sunshadePos_y = opticalbench_side*sqrt(5)/2. + opticalbenchcover_thick + sunshade_thick;
+        G4double sunshadePos_z = sunshade_side_y/2. - opticalbench_thick ;
+        G4RotationMatrix* sunshadeRot = new G4RotationMatrix;
+        sunshadeRot->rotateX(90*deg);
+        sunshade_phys = new G4PVPlacement(sunshadeRot,
+                                                   G4ThreeVector(sunshadePos_x, sunshadePos_y, sunshadePos_z),
+                                                   sunshade_log,
+                                                   "sunshade_phys",
+                                                   experimentalHall_log,
+                                                   false,
+                                                   0);
+
+
 	}
-
-
-	if (flag_dummypanels == true)
+	else if (flag_satellitebus == false)
 	{
-		G4double dummypanel_x = plate_x;
-		G4double dummypanel_y = plate_y;
-		G4double dummypanel_z = coll_thick + coating_thick + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + sdd_thick + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick + back1_thick + back2_thick + frame_thick;
-		
-		G4Box* dummypanel_box = new G4Box("dummypanel_box",
-										dummypanel_x/2., dummypanel_y/2., dummypanel_z/2.);
+        //...
+    }
 
-		dummypanels_log = new G4LogicalVolume(dummypanel_box,
-										   dummypanelsMaterial, "dummypanels_log", 0, 0, 0);
 
-	    G4RotationMatrix* dummypanel1Rot = new G4RotationMatrix;  
-	    dummypanel1Rot->rotateZ(60*deg); 
-		G4double dummypanel1Pos_x = bus_distance*(1-cos(60*deg));
-		G4double dummypanel1Pos_y = bus_distance*sin(60*deg);
-		G4double dummypanel1Pos_z = sddPos_z;
-		
-		dummypanel1_phys = new G4PVPlacement(dummypanel1Rot,
-										  G4ThreeVector(dummypanel1Pos_x, dummypanel1Pos_y, dummypanel1Pos_z),
-										  dummypanels_log,
-										  "dummypanel1_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		
-		G4RotationMatrix* dummypanel2Rot = new G4RotationMatrix;  
-	    dummypanel2Rot->rotateZ(120*deg); 
-		G4double dummypanel2Pos_x = bus_distance*(1-cos(120*deg));
-		G4double dummypanel2Pos_y = bus_distance*sin(120*deg);
-		G4double dummypanel2Pos_z = sddPos_z;
-		dummypanel2_phys = new G4PVPlacement(dummypanel2Rot,
-										  G4ThreeVector(dummypanel2Pos_x, dummypanel2Pos_y, dummypanel2Pos_z),
-										  dummypanels_log,
-										  "dummypanel2_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-
-	    G4RotationMatrix* dummypanel3Rot = new G4RotationMatrix;  
-	    dummypanel3Rot->rotateZ(180*deg); 
-		G4double dummypanel3Pos_x = 2*bus_distance;
-		G4double dummypanel3Pos_y = 0.*cm;	
-		G4double dummypanel3Pos_z = sddPos_z;
-		dummypanel3_phys = new G4PVPlacement(dummypanel3Rot,
-										  G4ThreeVector(dummypanel3Pos_x, dummypanel3Pos_y, dummypanel3Pos_z),
-										  dummypanels_log,
-										  "dummypanel3_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-	    G4RotationMatrix* dummypanel4Rot = new G4RotationMatrix;  
-	    dummypanel4Rot->rotateZ(240*deg); 
-		G4double dummypanel4Pos_x = bus_distance*(1-cos(240*deg));
-		G4double dummypanel4Pos_y = bus_distance*sin(240*deg);
-		G4double dummypanel4Pos_z = sddPos_z;
-		dummypanel4_phys = new G4PVPlacement(dummypanel4Rot,
-										  G4ThreeVector(dummypanel4Pos_x, dummypanel4Pos_y, dummypanel4Pos_z),
-										  dummypanels_log,
-										  "dummypanel4_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-	    G4RotationMatrix* dummypanel5Rot = new G4RotationMatrix;  
-	    dummypanel5Rot->rotateZ(300*deg); 
-		G4double dummypanel5Pos_x = bus_distance*(1-cos(300*deg));
-		G4double dummypanel5Pos_y = bus_distance*sin(300*deg);
-		G4double dummypanel5Pos_z = sddPos_z;
-		dummypanel5_phys = new G4PVPlacement(dummypanel5Rot,
-										  G4ThreeVector(dummypanel5Pos_x, dummypanel5Pos_y, dummypanel5Pos_z),
-										  dummypanels_log,
-										  "dummypanel5_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-	
-	}
-	else if (flag_dummypanels == false) 
-	{		
-		G4double dummypanel_x = 0.00001*cm;
-		G4double dummypanel_y = 0.00001*cm;
-		G4double dummypanel_z = 0.00001*cm;
-		
-		G4Box* dummypanel_box = new G4Box("dummypanel_box",
-										dummypanel_x/2., dummypanel_y/2., dummypanel_z/2.);
-
-		dummypanels_log = new G4LogicalVolume(dummypanel_box,
-										   defaultMaterial, "dummypanels_log", 0, 0, 0);
-		G4double dummypanel1Pos_x = bus_distance*(1-cos(60*deg));
-		G4double dummypanel1Pos_y = bus_distance*sin(60*deg);
-		dummypanel1_phys = new G4PVPlacement(0,
-										  G4ThreeVector(dummypanel1Pos_x, dummypanel1Pos_y, 0*cm),
-										  dummypanels_log,
-										  "dummypanel1_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		G4double dummypanel2Pos_x = bus_distance*(1-cos(120*deg));
-		G4double dummypanel2Pos_y = bus_distance*sin(120*deg);
-		dummypanel2_phys = new G4PVPlacement(0,
-										  G4ThreeVector(dummypanel2Pos_x, dummypanel2Pos_y, 0*cm),
-										  dummypanels_log,
-										  "dummypanel2_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		G4double dummypanel3Pos_x = bus_distance*(1-cos(180*deg));
-		G4double dummypanel3Pos_y = bus_distance*sin(180*deg);
-		dummypanel3_phys = new G4PVPlacement(0,
-			  							  G4ThreeVector(dummypanel3Pos_x, dummypanel3Pos_y, 0*cm),
-										  dummypanels_log,
-										  "dummypanel3_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		G4double dummypanel4Pos_x = bus_distance*(1-cos(240*deg));
-		G4double dummypanel4Pos_y = bus_distance*sin(240*deg);
-		dummypanel4_phys = new G4PVPlacement(0,
-										  G4ThreeVector(dummypanel4Pos_x, dummypanel4Pos_y, 0*cm),
-										  dummypanels_log,
-										  "dummypanel4_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		G4double dummypanel5Pos_x = bus_distance*(1-cos(300*deg));
-		G4double dummypanel5Pos_y = bus_distance*sin(300*deg);
-		dummypanel5_phys = new G4PVPlacement(0,
-										  G4ThreeVector(dummypanel5Pos_x, dummypanel5Pos_y, 0*cm),
-										  dummypanels_log,
-										  "dummypanel5_phys",
-										  experimentalHall_log,
-										  false,
-										  0);
-		
-	}
 
 
 
@@ -1604,9 +1525,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	experimentalHall_log -> SetVisAttributes(G4VisAttributes::Invisible);  
 
 	G4VisAttributes* SDDVisAtt= new G4VisAttributes(yellow);
-	sdd_log -> SetVisAttributes(SDDVisAtt);
-
-	plateSdd_log        -> SetVisAttributes(G4VisAttributes::Invisible);
+//    sdd_log -> SetVisAttributes(SDDVisAtt);
+    sdd_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    
+//    plateSdd_log        -> SetVisAttributes(G4VisAttributes::Invisible);
 	plateColl_log       -> SetVisAttributes(G4VisAttributes::Invisible);
 	plateCoating_log    -> SetVisAttributes(G4VisAttributes::Invisible);
 	plateDeadlayer1_log -> SetVisAttributes(G4VisAttributes::Invisible);  
@@ -1621,9 +1543,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
 	G4VisAttributes* CollimatorVisAtt= new G4VisAttributes(blue);
-	coll_log  -> SetVisAttributes(CollimatorVisAtt);
-	
-	G4VisAttributes* ThermalBlanketVisAtt = new G4VisAttributes(magenta);
+//    coll_log  -> SetVisAttributes(CollimatorVisAtt);
+    coll_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+
+    G4VisAttributes* ThermalBlanketVisAtt = new G4VisAttributes(magenta);
 	thermalblanket1_log -> SetVisAttributes(ThermalBlanketVisAtt);  
 	thermalblanket2_log -> SetVisAttributes(ThermalBlanketVisAtt);  
 	
@@ -1670,13 +1593,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	
 		G4VisAttributes* ServicemoduleVisAtt= new G4VisAttributes(magenta);
 		servicemodule_log -> SetVisAttributes(ServicemoduleVisAtt);
+        
+        G4VisAttributes* SolarpanelVisAtt= new G4VisAttributes(cyan);
+        solarpanel_log -> SetVisAttributes(SolarpanelVisAtt);
+
+        G4VisAttributes* OpticalBenchCoverVisAtt= new G4VisAttributes(red);
+        opticalbenchcover_log -> SetVisAttributes(OpticalBenchCoverVisAtt);
+
+        G4VisAttributes* SunshadeVisAtt= new G4VisAttributes(white);
+        sunshade_log -> SetVisAttributes(SunshadeVisAtt);
+
 	}
 	
-	if (flag_dummypanels == true) 
-	{
-		G4VisAttributes* DummypanelsVisAtt = new G4VisAttributes(green);
-		dummypanels_log -> SetVisAttributes(DummypanelsVisAtt);
-	}
 	
     
 	// The function must return the physical volume of the world
@@ -1695,6 +1623,8 @@ void DetectorConstruction::ConstructSDandField()
     // define a sensitive volume associated with it.
     // For this purpose, a SensitiveDetector object is instantiated.
 
+    auto sdman = G4SDManager::GetSDMpointer(); // Mandatory since Geant v. 4.10.03
+
     // Pixelization for the readout with 0.97 mm x 35 mm size
     // *** NOTE: Put the pixel values as parameters?
     G4double pixelsizeX = 0.97*mm;
@@ -1709,6 +1639,8 @@ void DetectorConstruction::ConstructSDandField()
     G4cout << "*** DEBUG: totalXpixels*totalYpixels " << totalXpixels*totalYpixels << G4endl;
         
     SensitiveDetector* sdd_SD = new SensitiveDetector("SDD", totalXpixels, totalYpixels);
+    
+    sdman->AddNewDetector(sdd_SD); // Mandatory since Geant v. 4.10.03
     SetSensitiveDetector(sdd_log, sdd_SD);
     
     
@@ -1850,11 +1782,27 @@ void DetectorConstruction::SetServicemoduleMaterial(G4String materialChoice)
 	if (pttoMaterial) servicemoduleMaterial = pttoMaterial;
 }
 
-void DetectorConstruction::SetDummypanelsMaterial(G4String materialChoice)
+
+void DetectorConstruction::SetSolarPanelMaterial(G4String materialChoice)
 {
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) dummypanelsMaterial = pttoMaterial;
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) solarpanelMaterial = pttoMaterial;
 }
+
+
+void DetectorConstruction::SetOpticalBenchCoverMaterial(G4String materialChoice)
+{
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) opticalbenchcoverMaterial = pttoMaterial;
+}
+
+
+void DetectorConstruction::SetSunshadeMaterial(G4String materialChoice)
+{
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) sunshadeMaterial = pttoMaterial;
+}
+
 
 
 
@@ -1915,12 +1863,6 @@ void DetectorConstruction::PrintParameters()
 		    	G4cout  << "\n";
 			} else {
 				G4cout 	<< "\n Bus disabled.\n";
-			}
-			if (flag_dummypanels == true) {
-				G4cout 	<< "\n Dummy panels enabled."
-					    << "\n Dummy panels material             : " 	<< dummypanelsMaterial -> GetName();
-			} else {
-				G4cout 	<< "\n Dummy panels disabled.\n";
 			}
 	G4cout  << "\n-----------------------------------------------------------------------------------\n";
 }

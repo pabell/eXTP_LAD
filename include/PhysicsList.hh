@@ -25,7 +25,7 @@ private:
     G4VPhysicsConstructor*               fEmPhysicsList;
     std::vector<G4VPhysicsConstructor*>  fHadronPhys;
     G4VPhysicsConstructor*               fDecPhysicsList;
-    
+    G4VPhysicsConstructor*               fRadioDecPhysicsList;
 };
 
 #endif
