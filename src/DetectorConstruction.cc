@@ -17,6 +17,7 @@
 #include "G4SubtractionSolid.hh"
 #include "G4Tubs.hh"
 #include "G4Polyhedra.hh"
+#include "G4Trd.hh"
 #include "G4Trap.hh"
 #include "G4RotationMatrix.hh"
 #include "G4LogicalVolume.hh"
@@ -35,6 +36,8 @@
 
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
+
+#include "globals.hh"
 
 #include <fstream>
 #include <vector>
@@ -73,6 +76,9 @@ DetectorConstruction::DetectorConstruction()
     solarpanel_log(0),
     opticalbenchcover_log(0),
     sunshade_log(0),
+    mountingplate_log(0),
+    optics_log(0),
+    wfmdummy_log(0),
 	sddParam(0),
 	collParam(0),
 	pcbsParam(0),
@@ -148,7 +154,27 @@ DetectorConstruction::DetectorConstruction()
     solarpanelB_phys(0),
     opticalbenchcover_phys(0),
     sunshade_phys(0),
-	defaultMaterial(0)
+    mountingplate_phys(0),
+    optics00_phys(0),
+    optics01_phys(0),
+    optics02_phys(0),
+    optics03_phys(0),
+    optics04_phys(0),
+    optics05_phys(0),
+    optics06_phys(0),
+    optics07_phys(0),
+    optics08_phys(0),
+    optics09_phys(0),
+    optics10_phys(0),
+    optics11_phys(0),
+    optics12_phys(0),
+    wfmdummy00_phys(0),
+    wfmdummy01_phys(0),
+    wfmdummy02_phys(0),
+    wfmdummy03_phys(0),
+    wfmdummy04_phys(0),
+    wfmdummy05_phys(0),
+    defaultMaterial(0)
 {
 	// Size of the experimental hall
     worldSide         = 100.0 *m;
@@ -285,6 +311,21 @@ void DetectorConstruction::DefineParameters()
     G4double snsh_sy= read *cm;
     config.readInto(read, "SUNSHADE_THICK", 2.);
     G4double snsh_thickness = read *cm;
+    config.readInto(read, "MOUNTINGPLATE_DIAMETER", 200.);
+    G4double mntp_diameter = read *cm;
+    config.readInto(read, "MOUNTINGPLATE_THICK", 2.);
+    G4double mntp_thickness = read *cm;
+    config.readInto(read, "OPTICS_DIAMETER", 20.);
+    G4double opt_diameter = read *cm;
+    config.readInto(read, "OPTICS_THICK", 20.);
+    G4double opt_thickness = read *cm;
+
+    config.readInto(read, "WFMDUMMY_DETSIDE", 15.);
+    G4double wfm_ds = read *cm;
+    config.readInto(read, "WFMDUMMY_MASKSIDE", 30.);
+    G4double wfm_ms = read *cm;
+    config.readInto(read, "WFMDUMMY_HEIGHT", 30.);
+    G4double wfm_h = read *cm;
 
 
 
@@ -331,6 +372,15 @@ void DetectorConstruction::DefineParameters()
     SetSunshadeSideX(snsh_sx);
     SetSunshadeSideY(snsh_sy);
     SetSunshadeThick(snsh_thickness);
+    SetMountingplateDiameter(mntp_diameter);
+    SetMountingplateThick(mntp_thickness);
+    SetOpticsDiameter(opt_diameter);
+    SetOpticsThick(opt_thickness);
+    
+    SetWFMDummyDetside(wfm_ds);
+    SetWFMDummyMaskside(wfm_ms);
+    SetWFMDummyHeight(wfm_h);
+
 	SetBusDistance(b_distance) ;
     SetPixelX(xpix);
     SetPixelY(ypix);
@@ -379,6 +429,12 @@ void DetectorConstruction::DefineParameters()
     SetOpticalBenchCoverMaterial(readm);
     config.readInto<G4String>(readm, "SUNSHADE_MATERIAL", "EffectiveBusAluminiumSolid");
     SetSunshadeMaterial(readm);
+    config.readInto<G4String>(readm, "MOUNTINGPLATE_MATERIAL", "G4_Al");
+    SetMountingplateMaterial(readm);
+    config.readInto<G4String>(readm, "OPTICS_MATERIAL", "EffectiveBusAluminiumSolid");
+    SetOpticsMaterial(readm);
+    config.readInto<G4String>(readm, "WFMDUMMY_MATERIAL", "EffectiveBusAluminiumSolid");
+    SetWFMDummyMaterial(readm);
 
 
 	// Booleans
@@ -670,6 +726,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double plate_z = thermalblanketA_thick + thermalblanketB_thick + coll_thick + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick
                         + sdd_thick + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick;
     
+    G4double bus_offset_z = sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick;
+
     G4cout << "MODULE CONFIGURATION:" << G4endl;
     G4cout << "No. of SDDs per X side: "<< n_sdd_x << G4endl;
     G4cout << "No. of SDDs per Y side: "<< n_sdd_y << G4endl;
@@ -1240,7 +1298,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		// Solid
 	    const G4double Z[2]= {0*cm, -opticalbench_thick};
 	    const G4double rInner[2]= {0*cm, 0*cm};
-	    const G4double rOuter[2]= {opticalbench_side, opticalbench_side};
+	    const G4double rOuter[2]= {opticalbench_side*sqrt(3)/2., opticalbench_side*sqrt(3)/2.};
 	    G4Polyhedra* opticalbench_Ext_Polyhedra = new G4Polyhedra("opticalbench_Ext_Polyhedra",
 												0.*deg,
 												360.*deg,
@@ -1262,9 +1320,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		                                       opticalbenchMaterial, "opticalbench_log", 0, 0, 0);
 	
 		// Physical
-		G4double opticalbenchPos_x = bus_distance;
+		G4double opticalbenchPos_x = 0*cm;
 		G4double opticalbenchPos_y = 0*cm;
-		G4double opticalbenchPos_z = 0*cm ;
+		G4double opticalbenchPos_z = - bus_offset_z - mountingplate_thick;
 //        G4RotationMatrix* opticalbenchRot = new G4RotationMatrix;
 //        opticalbenchRot->rotateZ(22.5*deg);
 		opticalbench_phys = new G4PVPlacement(0,
@@ -1287,9 +1345,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		tower_log = new G4LogicalVolume(tower_Tubs,
 		                              towerMaterial, "tower_log", 0, 0, 0);
 		// Physical
-		G4double towerPos_x = bus_distance;
-		G4double towerPos_y = 0*m;
-		G4double towerPos_z = -(opticalbench_thick + tower_height/2.) ;
+		G4double towerPos_x = 0*cm;
+		G4double towerPos_y = 0*cm;
+		G4double towerPos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height/2. ;
 		tower_phys = new G4PVPlacement(0,
 									  G4ThreeVector(towerPos_x, towerPos_y, towerPos_z),
 									  tower_log,
@@ -1316,9 +1374,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		                                       servicemoduleMaterial, "servicemodule_log", 0, 0, 0);
 	
 		// Physical
-		G4double servicemodulePos_x = bus_distance;
+		G4double servicemodulePos_x = 0*cm;
 		G4double servicemodulePos_y = 0*cm;
-		G4double servicemodulePos_z = -(opticalbench_thick + tower_height) ;
+		G4double servicemodulePos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height ;
 //        G4RotationMatrix* servicemoduleRot = new G4RotationMatrix;
 //        servicemoduleRot->rotateZ(30*deg);
 		servicemodule_phys = new G4PVPlacement(0,
@@ -1338,9 +1396,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                            solarpanelMaterial, "solarpanel_log", 0, 0, 0);
         // Physical 1
         G4double solarpanelGap = 118.2 *cm;
-        G4double solarpanelPos_x = bus_distance + tower_diameter/2 + solarpanelGap + solarpanel_side_x/2.;
+        G4double solarpanelPos_x =  tower_diameter/2 + solarpanelGap + solarpanel_side_x/2.;
         G4double solarpanelPos_y = 0.*cm;
-        G4double solarpanelPos_z = - opticalbench_thick - tower_height/2.;
+        G4double solarpanelPos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height/2.;
         G4RotationMatrix* solarpanelRot = new G4RotationMatrix;
         solarpanelRot->rotateX(90*deg);
         
@@ -1353,7 +1411,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                           0);
 
         // Physical 2
-        solarpanelPos_x = bus_distance -tower_diameter/2 - solarpanelGap - solarpanel_side_x/2.;
+        solarpanelPos_x = -tower_diameter/2 - solarpanelGap - solarpanel_side_x/2.;
         solarpanelB_phys = new G4PVPlacement(solarpanelRot,
                                           G4ThreeVector(solarpanelPos_x, solarpanelPos_y, solarpanelPos_z),
                                           solarpanel_log,
@@ -1374,9 +1432,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         opticalbenchcover_log = new G4LogicalVolume(opticalBenchCover_Tubs,
                                         opticalbenchcoverMaterial, "opticalbenchcover_log", 0, 0, 0);
         // Physical
-        G4double opticalbenchcoverPos_x = bus_distance;
-        G4double opticalbenchcoverPos_y = opticalbench_side*sqrt(5)/2. + opticalbenchcover_thick;
-        G4double opticalbenchcoverPos_z = opticalbenchcover_diameter/2. ;
+        G4double opticalbenchcoverPos_x = 0*cm;
+        G4double opticalbenchcoverPos_y = mountingplate_diameter/2. + opticalbenchcover_thick;
+        G4double opticalbenchcoverPos_z = (mountingplate_diameter-tower_diameter)/2 + opticalbenchcover_diameter/2. ;
         G4RotationMatrix* opticalbenchcoverRot = new G4RotationMatrix;
         opticalbenchcoverRot->rotateX(90*deg);
         opticalbenchcover_phys = new G4PVPlacement(opticalbenchcoverRot,
@@ -1395,9 +1453,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         sunshade_log = new G4LogicalVolume(sunshade_Box,
                                                     sunshadeMaterial, "sunshade_log", 0, 0, 0);
         // Physical
-        G4double sunshadePos_x = bus_distance;
-        G4double sunshadePos_y = opticalbench_side*sqrt(5)/2. + opticalbenchcover_thick + sunshade_thick;
-        G4double sunshadePos_z = sunshade_side_y/2. - opticalbench_thick ;
+        G4double sunshadePos_x = 0*cm;
+        G4double sunshadePos_y = mountingplate_diameter/2. + opticalbenchcover_thick + sunshade_thick;
+        G4double sunshadePos_z = sunshade_side_y/2. + mountingplate_thick;
         G4RotationMatrix* sunshadeRot = new G4RotationMatrix;
         sunshadeRot->rotateX(90*deg);
         sunshade_phys = new G4PVPlacement(sunshadeRot,
@@ -1407,6 +1465,204 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                                    experimentalHall_log,
                                                    false,
                                                    0);
+
+        // g. Mounting plate
+        // Solid
+        G4VSolid* mountingplate_Tubs = new G4Tubs("mountingplate_Tubs",
+                                                      tower_diameter/2.,            // inner radius
+                                                      mountingplate_diameter/2.,    // outer radius
+                                                      mountingplate_thick/2.,       // height
+                                                      0.0 * deg, 360.0 * deg);      // segment angles
+        // Logical
+        mountingplate_log = new G4LogicalVolume(mountingplate_Tubs,
+                                                    mountingplateMaterial, "mountingplate_log", 0, 0, 0);
+        // Physical
+        G4double mountingplatePos_x = 0*cm;
+        G4double mountingplatePos_y = 0*cm;
+        G4double mountingplatePos_z = -bus_offset_z - mountingplate_thick/2. ;
+//        G4RotationMatrix* mountingplateRot = new G4RotationMatrix;
+//        mountingplateRot->rotateX(90*deg);
+        mountingplate_phys = new G4PVPlacement(0,
+                                                   G4ThreeVector(mountingplatePos_x, mountingplatePos_y, mountingplatePos_z),
+                                                   mountingplate_log,
+                                                   "mountingplate_phys",
+                                                   experimentalHall_log,
+                                                   false,
+                                                   0);
+        
+        // h. Optics
+        // Solid
+        G4VSolid* optics_Tubs = new G4Tubs("optics_Tubs",
+                                                  0.,                       // inner radius
+                                                  optics_diameter/2.,       // outer radius
+                                                  optics_thick/2.,          // height
+                                                  0.0 * deg, 360.0 * deg);  // segment angles
+        // Logical
+        optics_log = new G4LogicalVolume(optics_Tubs,
+                                                opticsMaterial, "optics_log", 0, 0, 0);
+        // Physical
+        G4double optics_OuterRing_Pos_x = tower_diameter/2.-optics_diameter/2. - 5*cm; // TODO: Hardcoded distance btw. optics and tube walls?
+        G4double optics_InnerRing_Pos_x = optics_diameter/2. + 20*cm; // TODO: Hardcoded distance btw. optics and tube center?
+        G4double opticsPos_z = -bus_offset_z - optics_thick/2. ;
+        optics00_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(0.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(0.*36.*3.1415926/180.), opticsPos_z),
+                                           optics_log,
+                                           "optics00_phys",
+                                           experimentalHall_log,
+                                           false,
+                                           0);
+        optics01_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(1.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(1.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics01_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics02_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(2.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(2.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics02_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics03_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(3.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(3.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics03_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics04_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(4.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(4.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics04_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics05_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(5.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(5.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics05_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics06_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(6.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(6.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics06_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics07_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(7.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(7.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics07_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics08_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(8.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(8.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics08_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics09_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_OuterRing_Pos_x*cos(9.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(9.*36.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics09_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics10_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_InnerRing_Pos_x*cos(30.*3.1415926/180.), optics_InnerRing_Pos_x*sin(30.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics10_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics11_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_InnerRing_Pos_x*cos(150.*3.1415926/180.), optics_InnerRing_Pos_x*sin(150.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics11_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+        optics12_phys = new G4PVPlacement(0,
+                                          G4ThreeVector(optics_InnerRing_Pos_x*cos(270.*3.1415926/180.), optics_InnerRing_Pos_x*sin(270.*3.1415926/180.), opticsPos_z),
+                                          optics_log,
+                                          "optics12_phys",
+                                          experimentalHall_log,
+                                          false,
+                                          0);
+
+
+        // i. WFM dummies
+        // Solid
+        G4VSolid* wfmdummy_Trd = new G4Trd("wfmdummy_Trd",
+                                                  wfmdummy_detside/2.,       // dx1 at -dz
+                                                  wfmdummy_maskside/2.,      // dx2 at +dz
+                                                  wfmdummy_detside/2.,       // dy1 at -dz
+                                                  wfmdummy_maskside/2.,      // dy2 at + dz
+                                                  wfmdummy_height/2.);          // dz
+        
+        // Logical
+        wfmdummy_log = new G4LogicalVolume(wfmdummy_Trd,
+                                                wfmdummyMaterial, "wfmdummy_log", 0, 0, 0);
+        // Physical
+        G4double wfmdummyA_Pos_x = wfmdummy_maskside/2.;
+        G4double wfmdummyA_Pos_y = -(mountingplate_diameter/2.-wfmdummy_maskside/2.);
+        G4double wfmdummyA_Pos_z = -bus_offset_z + wfmdummy_height/2. ;
+        wfmdummy00_phys = new G4PVPlacement(0,
+                                               G4ThreeVector(wfmdummyA_Pos_x, wfmdummyA_Pos_y, wfmdummyA_Pos_z),
+                                               wfmdummy_log,
+                                               "wfmdummy00_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+        wfmdummy01_phys = new G4PVPlacement(0,
+                                            G4ThreeVector(-wfmdummyA_Pos_x, wfmdummyA_Pos_y, wfmdummyA_Pos_z),
+                                            wfmdummy_log,
+                                            "wfmdummy01_phys",
+                                            experimentalHall_log,
+                                            false,
+                                            0);
+        G4double wfmdummyB_Pos_x = -opticalbench_side;
+        G4double wfmdummyB_Pos_y = -wfmdummy_maskside/2.;
+        G4RotationMatrix* wfmdummyRot1 = new G4RotationMatrix;
+        wfmdummyRot1->rotateY(60*deg);
+        wfmdummy02_phys = new G4PVPlacement(wfmdummyRot1,
+                                            G4ThreeVector(wfmdummyB_Pos_x, wfmdummyB_Pos_y, wfmdummyA_Pos_z),
+                                            wfmdummy_log,
+                                            "wfmdummy02_phys",
+                                            experimentalHall_log,
+                                            false,
+                                            0);
+        wfmdummy03_phys = new G4PVPlacement(wfmdummyRot1,
+                                            G4ThreeVector(wfmdummyB_Pos_x, -wfmdummyB_Pos_y, wfmdummyA_Pos_z),
+                                            wfmdummy_log,
+                                            "wfmdummy03_phys",
+                                            experimentalHall_log,
+                                            false,
+                                            0);
+        G4double wfmdummyC_Pos_x = +opticalbench_side;
+        G4double wfmdummyC_Pos_y = -wfmdummy_maskside/2.;
+        G4RotationMatrix* wfmdummyRot2 = new G4RotationMatrix;
+        wfmdummyRot2->rotateY(-60*deg);
+        wfmdummy04_phys = new G4PVPlacement(wfmdummyRot2,
+                                            G4ThreeVector(wfmdummyC_Pos_x, wfmdummyC_Pos_y, wfmdummyA_Pos_z),
+                                            wfmdummy_log,
+                                            "wfmdummy04_phys",
+                                            experimentalHall_log,
+                                            false,
+                                            0);
+        wfmdummy05_phys = new G4PVPlacement(wfmdummyRot2,
+                                            G4ThreeVector(wfmdummyC_Pos_x, -wfmdummyC_Pos_y, wfmdummyA_Pos_z),
+                                            wfmdummy_log,
+                                            "wfmdummy05_phys",
+                                            experimentalHall_log,
+                                            false,
+                                            0);
 
 
 	}
@@ -1489,6 +1745,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
         G4VisAttributes* SunshadeVisAtt= new G4VisAttributes(white);
         sunshade_log -> SetVisAttributes(SunshadeVisAtt);
+        
+        G4VisAttributes* MountingplateVisAtt= new G4VisAttributes(yellow);
+        mountingplate_log -> SetVisAttributes(MountingplateVisAtt);
+
+        G4VisAttributes* OpticsVisAtt = new G4VisAttributes(green);
+        optics_log -> SetVisAttributes(OpticsVisAtt);
+
+        G4VisAttributes* WFMDummyVisAtt = new G4VisAttributes(blue);
+        wfmdummy_log -> SetVisAttributes(WFMDummyVisAtt);
 
 	}
 	
@@ -1648,6 +1913,23 @@ void DetectorConstruction::SetSunshadeMaterial(G4String materialChoice)
     if (pttoMaterial) sunshadeMaterial = pttoMaterial;
 }
 
+void DetectorConstruction::SetMountingplateMaterial(G4String materialChoice)
+{
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) mountingplateMaterial = pttoMaterial;
+}
+
+void DetectorConstruction::SetOpticsMaterial(G4String materialChoice)
+{
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) opticsMaterial = pttoMaterial;
+}
+
+void DetectorConstruction::SetWFMDummyMaterial(G4String materialChoice)
+{
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) wfmdummyMaterial = pttoMaterial;
+}
 
 
 
