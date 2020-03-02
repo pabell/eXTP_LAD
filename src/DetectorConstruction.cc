@@ -7,6 +7,7 @@
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 
+#include "G4NistManager.hh"
 #include "G4RunManager.hh"
 #include "G4RegionStore.hh"
 #include "G4SDManager.hh"
@@ -43,93 +44,120 @@
 
 // Constructor 
 DetectorConstruction::DetectorConstruction() 
-:	experimentalHall_log(0), 
+:	experimentalHall_log(0),
+    plateSdd_log(0),
 	sdd_log(0), 
 	plateColl_log(0),
 	coll_log(0),
-    thermalblanket1_log(0),
-    thermalblanket2_log(0),
-	plateCoating_log(0),
-	coating_log(0),
-	plateDeadlayer1_log(0),
-	deadlayer1_log(0),
-	plateDeadlayer2_log(0),
-	deadlayer2_log(0),
-	plateDeadlayer3_log(0),
-	deadlayer3_log(0),
+    thermalblanketA_log(0),
+    thermalblanketB_log(0),
+	plateDeadlayerA_log(0),
+	deadlayerA_log(0),
+	plateDeadlayerB_log(0),
+	deadlayerB_log(0),
+	plateDeadlayerC_log(0),
+	deadlayerC_log(0),
 	platePcbs_log(0),
 	pcbs_log(0),
-	platePcb1_log(0),
-	pcb1_log(0),
-	platePcb2_log(0),
-	pcb2_log(0),
-	platePcb3_log(0),
-	pcb3_log(0),
-	plateBack1_log(0),
-	back1_log(0),
-	plateBack2_log(0),
-	back2_log(0),	
-	plateFrame_log(0),
-	frame_log(0),
-	sideframe1_log(0),
-	sideframe2_log(0),
+	platePcbA_log(0),
+	pcbA_log(0),
+	platePcbB_log(0),
+	pcbB_log(0),
+	platePcbC_log(0),
+	pcbC_log(0),
+	backshieldA_log(0),
+	backshieldB_log(0),
 	opticalbench_log(0),
 	tower_log(0),
 	servicemodule_log(0),
-//    solarpanel_log(0),
+    solarpanel_log(0),
     opticalbenchcover_log(0),
     sunshade_log(0),
 	sddParam(0),
 	collParam(0),
-	coatingParam(0),
 	pcbsParam(0),
-	pcb1Param(0),
-	pcb2Param(0),
-	pcb3Param(0),
-	back1Param(0),
-	back2Param(0),
-	frameParam(0),
-	experimentalHall_phys(0), 
-	sdd_phys(0), 
-	plateColl_phys(0),
+	pcbAParam(0),
+	pcbBParam(0),
+	pcbCParam(0),
+	experimentalHall_phys(0),
+    plateSdd00_phys(0),
+    plateSdd01_phys(0),
+    plateSdd02_phys(0),
+    plateSdd03_phys(0),
+	sdd_phys(0),
+	plateColl00_phys(0),
+    plateColl01_phys(0),
+    plateColl02_phys(0),
+    plateColl03_phys(0),
 	coll_phys(0),
-	thermalblanket1_phys(0),
-	thermalblanket2_phys(0),
-	plateCoating_phys(0),
-	coating_phys(0),
-	plateDeadlayer1_phys(0),
-	deadlayer1_phys(0),
-	plateDeadlayer2_phys(0),
-	deadlayer2_phys(0),
-	plateDeadlayer3_phys(0),
-	deadlayer3_phys(0),
-	platePcbs_phys(0),
+	thermalblanketA00_phys(0),
+    thermalblanketA01_phys(0),
+    thermalblanketA02_phys(0),
+    thermalblanketA03_phys(0),
+	thermalblanketB00_phys(0),
+    thermalblanketB01_phys(0),
+    thermalblanketB02_phys(0),
+    thermalblanketB03_phys(0),
+	plateDeadlayerA00_phys(0),
+    plateDeadlayerA01_phys(0),
+    plateDeadlayerA02_phys(0),
+    plateDeadlayerA03_phys(0),
+	deadlayerA_phys(0),
+	plateDeadlayerB00_phys(0),
+    plateDeadlayerB01_phys(0),
+    plateDeadlayerB02_phys(0),
+    plateDeadlayerB03_phys(0),
+	deadlayerB_phys(0),
+	plateDeadlayerC00_phys(0),
+    plateDeadlayerC01_phys(0),
+    plateDeadlayerC02_phys(0),
+    plateDeadlayerC03_phys(0),
+	deadlayerC_phys(0),
+	platePcbs00_phys(0),
+    platePcbs01_phys(0),
+    platePcbs02_phys(0),
+    platePcbs03_phys(0),
 	pcbs_phys(0),
-	platePcb1_phys(0),
-	pcb1_phys(0),
-	platePcb2_phys(0),
-	pcb2_phys(0),
-	platePcb3_phys(0),
-	pcb3_phys(0),	
-	plateBack1_phys(0),
-	back1_phys(0),
-	plateBack2_phys(0),
-	back2_phys(0),
-	plateFrame_phys(0),
-	frame_phys(0),
-	sideframe1_phys(0),
-	sideframe2_phys(0),
+	platePcbA00_phys(0),
+    platePcbA01_phys(0),
+    platePcbA02_phys(0),
+    platePcbA03_phys(0),
+	pcbA_phys(0),
+	platePcbB00_phys(0),
+    platePcbB01_phys(0),
+    platePcbB02_phys(0),
+    platePcbB03_phys(0),
+	pcbB_phys(0),
+	platePcbC00_phys(0),
+    platePcbC01_phys(0),
+    platePcbC02_phys(0),
+    platePcbC03_phys(0),
+	pcbC_phys(0),
+	backshieldA00_phys(0),
+    backshieldA01_phys(0),
+    backshieldA02_phys(0),
+    backshieldA03_phys(0),
+	backshieldB00_phys(0),
+    backshieldB01_phys(0),
+    backshieldB02_phys(0),
+    backshieldB03_phys(0),
 	opticalbench_phys(0),
 	tower_phys(0),
 	servicemodule_phys(0),
-    solarpanel1_phys(0),
-    solarpanel2_phys(0),
+    solarpanelA_phys(0),
+    solarpanelB_phys(0),
     opticalbenchcover_phys(0),
     sunshade_phys(0),
 	defaultMaterial(0)
 {
 	// Size of the experimental hall
     worldSide         = 100.0 *m;
+
+    // Define the frame numbers
+    n_sdd_x = 4;
+    n_sdd_y = 4;
+    n_sdd_per_module = n_sdd_x*n_sdd_y;
+    n_modules = 2;
 
 	// Define the materials
 	DefineMaterials();	
@@ -142,10 +170,34 @@ DetectorConstruction::DetectorConstruction()
 	
 ;}		
 
-
-
 // Destructor 
 DetectorConstruction::~DetectorConstruction() { } 	
+
+G4ThreeVector DetectorConstruction::moduleLocation(G4int moduleID)
+{
+    G4double xMod = 0*cm;
+    G4double yMod = moduleID * 100*cm;
+    G4double zMod = 0*cm;
+
+    if(moduleID == 0)
+    {
+        xMod = 20*cm;
+    }
+
+    return G4ThreeVector(xMod, yMod, zMod);
+}
+
+G4RotationMatrix* DetectorConstruction::moduleRotation(G4int moduleID)
+{
+    G4RotationMatrix* moduleRot = new G4RotationMatrix;
+
+    if(moduleID == 1)
+    {
+        moduleRot->rotateZ(90*deg);
+    }
+    
+    return moduleRot;
+}
 
 
 
@@ -170,42 +222,41 @@ void DetectorConstruction::DefineParameters()
 	G4double s_y = read *cm;
 	config.readInto(read, "SDD_THICK", 450.);
 	G4double s_thickness = read *um;
-	config.readInto(read_int, "N_MOD_X", 28);
-	G4int mArray_x = read_int;
-	config.readInto(read_int, "N_MOD_Y", 12);
-	G4int mArray_y = read_int;
-	config.readInto(read, "COLL_THICK", 2.);
+    
+    config.readInto(read, "MODULEFRAME_X", 542.);
+    G4double mf_x = read *mm;
+    config.readInto(read, "MODULEFRAME_Y", 329.);
+    G4double mf_y = read *mm;
+    config.readInto(read, "INTERNALFRAME_X", 16.45);
+    G4double if_x = read *mm;
+    config.readInto(read, "INTERNALFRAME_Y", 9.);
+    G4double if_y = read *mm;
+
+
+    config.readInto(read, "COLL_THICK", 2.);
 	G4double coll_thickness = read *mm;
-	config.readInto(read, "THERMALB1_THICK", 5.);
-	G4double thermalblanket1_thickness = read *um;
-	config.readInto(read, "THERMALB2_THICK", 0.1);
-	G4double thermalblanket2_thickness = read *um;
-	config.readInto(read, "COATING_THICK", 5.);
-	G4double coating_thickness = read *um;
-	config.readInto(read, "DEADLAY1_THICK", 1.);
-	G4double deadlayer1_thickness = read *um;
-	config.readInto(read, "DEADLAY2_THICK", 1.);
-	G4double deadlayer2_thickness = read *um;
-	config.readInto(read, "DEADLAY3_THICK", 1.);
-	G4double deadlayer3_thickness = read *um;
+    config.readInto(read, "THERMALBLANKET_A_THICK", 5.);
+	G4double thermalblanketA_thickness = read *um;
+	config.readInto(read, "THERMALBLANKET_B_THICK", 0.1);
+	G4double thermalblanketB_thickness = read *um;
+	config.readInto(read, "DEADLAYER_A_THICK", 1.);
+	G4double deadlayerA_thickness = read *um;
+	config.readInto(read, "DEADLAYER_B_THICK", 1.);
+	G4double deadlayerB_thickness = read *um;
+	config.readInto(read, "DEADLAYER_C_THICK", 1.);
+	G4double deadlayerC_thickness = read *um;
 	config.readInto(read, "PCBS_THICK", 100.);
 	G4double pcbs_thickness = read *um;
-	config.readInto(read, "PCB1_THICK", 1.);
-	G4double pcb1_thickness = read *mm;
-	config.readInto(read, "PCB2_THICK", 70.);
-	G4double pcb2_thickness = read *um;
-	config.readInto(read, "PCB3_THICK", 1.);
-	G4double pcb3_thickness = read *mm;
-	config.readInto(read, "BACKSHIELD1_THICK", 1.);
-	G4double backshield1_thickness = read *mm;
-	config.readInto(read, "BACKSHIELD2_THICK", 200.);
-	G4double backshield2_thickness = read *um;
-	config.readInto(read, "FRAME_THICK", 1.);
-	G4double frame_thickness = read *cm;
-	config.readInto(read, "SIDEFRAME1_WIDTH", 2.);
-	G4double sideframe1_w = read *mm;
-	config.readInto(read, "SIDEFRAME2_WIDTH", 1.);
-	G4double sideframe2_w = read *mm;
+	config.readInto(read, "PCB_A_THICK", 1.);
+	G4double pcbA_thickness = read *mm;
+	config.readInto(read, "PCB_B_THICK", 70.);
+	G4double pcbB_thickness = read *um;
+	config.readInto(read, "PCB_C_THICK", 1.);
+	G4double pcbC_thickness = read *mm;
+	config.readInto(read, "BACKSHIELD_A_THICK", 1.);
+	G4double backshieldA_thickness = read *mm;
+	config.readInto(read, "BACKSHIELD_B_THICK", 0.3);
+	G4double backshieldB_thickness = read *mm;
 	config.readInto(read, "OPTICALBENCH_SIDE", 90.);
 	G4double ob_side= read *cm;
 	config.readInto(read, "OPTICALBENCH_THICK", 18.);
@@ -248,24 +299,24 @@ void DetectorConstruction::DefineParameters()
 	SetSDDSideX(s_x) ;
 	SetSDDSideY(s_y) ;
 	SetSDDThick(s_thickness) ;
-	SetModuleArrayX(mArray_x) ;
-	SetModuleArrayY(mArray_y) ;
+    
+    SetModuleframeX(mf_x);
+    SetModuleframeY(mf_y);
+    SetInternalframeX(if_x);
+    SetInternalframeY(if_y);
+
 	SetCollThick(coll_thickness) ;
-	SetThermalblanket1Thick(thermalblanket1_thickness) ;
-	SetThermalblanket2Thick(thermalblanket2_thickness) ;	
-	SetCoatingThick(coating_thickness) ;
-	SetDeadlayer1Thick(deadlayer1_thickness) ;
-	SetDeadlayer2Thick(deadlayer2_thickness) ;	
-	SetDeadlayer3Thick(deadlayer3_thickness) ;
+	SetThermalblanketAThick(thermalblanketA_thickness) ;
+	SetThermalblanketBThick(thermalblanketB_thickness) ;
+	SetDeadlayerAThick(deadlayerA_thickness) ;
+	SetDeadlayerBThick(deadlayerB_thickness) ;
+	SetDeadlayerCThick(deadlayerC_thickness) ;
 	SetPcbsThick(pcbs_thickness) ;
-	SetPcb1Thick(pcb1_thickness) ;
-	SetPcb2Thick(pcb2_thickness) ;
-	SetPcb3Thick(pcb3_thickness) ;
-	SetBack1Thick(backshield1_thickness) ;
-	SetBack2Thick(backshield2_thickness) ;	
-	SetFrameThick(frame_thickness) ;
-	SetSideframe1Width(sideframe1_w) ;
-	SetSideframe2Width(sideframe2_w) ;
+	SetPcbAThick(pcbA_thickness) ;
+	SetPcbBThick(pcbB_thickness) ;
+	SetPcbCThick(pcbC_thickness) ;
+	SetBackshieldAThick(backshieldA_thickness) ;
+	SetBackshieldBThick(backshieldB_thickness) ;
     SetOpticalbenchSide(ob_side);
     SetOpticalbenchThick(ob_thickness);
     SetTowerHeight(t_height) ;
@@ -288,40 +339,34 @@ void DetectorConstruction::DefineParameters()
 	
 	// Materials
 	G4String readm;
-	config.readInto<G4String>(readm, "SDD_MATERIAL", "SiliconSolid");
+	config.readInto<G4String>(readm, "SDD_MATERIAL", "G4_Si");
 	SetSDDMaterial(readm);
 	config.readInto<G4String>(readm, "COLL_MATERIAL", "EffectivePhillips3502Glass_oar70");
     SetCollMaterial(readm);
-	config.readInto<G4String>(readm, "THERMALBLANKET1_MATERIAL", "Polymide");
-    SetThermalblanket1Material(readm);
-	config.readInto<G4String>(readm, "THERMALBLANKET2_MATERIAL", "AluminiumSolid");
-    SetThermalblanket2Material(readm);
-	config.readInto<G4String>(readm, "COATING_MATERIAL", "AluminiumSolid");
-    SetCoatingMaterial(readm);
-	config.readInto<G4String>(readm, "DEADLAYER1_MATERIAL", "SiliconOxide");
-    SetDeadlayer1Material(readm);
-	config.readInto<G4String>(readm, "DEADLAYER2_MATERIAL", "AluminiumSolid");
-    SetDeadlayer2Material(readm);
-	config.readInto<G4String>(readm, "DEADLAYER3_MATERIAL", "SiliconSolid");
-	SetDeadlayer3Material(readm);
-	config.readInto<G4String>(readm, "PCBS_MATERIAL", "AluminiumSolid");
+	config.readInto<G4String>(readm, "THERMALBLANKET_A_MATERIAL", "G4_KAPTON");
+    SetThermalblanketAMaterial(readm);
+	config.readInto<G4String>(readm, "THERMALBLANKET_B_MATERIAL", "G4_Al");
+    SetThermalblanketBMaterial(readm);
+	config.readInto<G4String>(readm, "DEADLAYER_A_MATERIAL", "G4_SILICON_DIOXIDE");
+    SetDeadlayerAMaterial(readm);
+	config.readInto<G4String>(readm, "DEADLAYER_B_MATERIAL", "G4_Al");
+    SetDeadlayerBMaterial(readm);
+	config.readInto<G4String>(readm, "DEADLAYER_C_MATERIAL", "G4_Si");
+	SetDeadlayerCMaterial(readm);
+	config.readInto<G4String>(readm, "PCB_S_MATERIAL", "G4_Al");
     SetPcbsMaterial(readm);
-	config.readInto<G4String>(readm, "PCB1_MATERIAL", "FR4");
-    SetPcb1Material(readm);
-	config.readInto<G4String>(readm, "PCB2_MATERIAL", "CopperSolid");
-    SetPcb2Material(readm);
-	config.readInto<G4String>(readm, "PCB3_MATERIAL", "FR4");
-    SetPcb3Material(readm);
-	config.readInto<G4String>(readm, "BACK1_MATERIAL", "AluminiumSolid");
-    SetBack1Material(readm);
-	config.readInto<G4String>(readm, "BACK2_MATERIAL", "LeadSolid");
-    SetBack2Material(readm);
-	config.readInto<G4String>(readm, "FRAME_MATERIAL", "CarbonFiberReinforcedPlastic");
-    SetFrameMaterial(readm);
-	config.readInto<G4String>(readm, "SIDEFRAME1_MATERIAL", "CarbonFiberReinforcedPlastic");
-    SetSideframe1Material(readm);
-	config.readInto<G4String>(readm, "SIDEFRAME2_MATERIAL", "AluminiumSolid");
-    SetSideframe2Material(readm);
+	config.readInto<G4String>(readm, "PCB_A_MATERIAL", "FR4");
+    SetPcbAMaterial(readm);
+	config.readInto<G4String>(readm, "PCB_B_MATERIAL", "G4_Cu");
+    SetPcbBMaterial(readm);
+	config.readInto<G4String>(readm, "PCB_C_MATERIAL", "FR4");
+    SetPcbCMaterial(readm);
+	config.readInto<G4String>(readm, "BACKSHIELD_A_MATERIAL", "G4_Al");
+    SetBackshieldAMaterial(readm);
+	config.readInto<G4String>(readm, "BACKSHIELD_B_MATERIAL", "G4_Pb");
+    SetBackshieldBMaterial(readm);
+    config.readInto<G4String>(readm, "MODULEFRAME_MATERIAL", "G4_Al");
+    SetModuleframeMaterial(readm);
 	config.readInto<G4String>(readm, "OPTICALBENCH_MATERIAL", "CarbonFiberReinforcedPlastic");
     SetOpticalbenchMaterial(readm);
 	config.readInto<G4String>(readm, "TOWER_MATERIAL", "CarbonFiberReinforcedPlastic");
@@ -353,7 +398,8 @@ void DetectorConstruction::DefineMaterials()
 	G4int nel;			// Number of elements in a compound
 	G4int ncomponents;	// Number of components in a mixture
 	G4double fractionmass;
-	
+    G4int natoms;
+
 	// Elements
 	G4Element*  H  = new G4Element("Hydrogen"  , "H" , z = 1. , a =  1.008*g/mole);
 	G4Element*  He = new G4Element("Helium"    , "He", z = 2. , a =  4.003*g/mole);
@@ -368,13 +414,10 @@ void DetectorConstruction::DefineMaterials()
 	G4Element*  Ti = new G4Element("Titanium"  , "Ti", z = 22., a =  47.87*g/mole);
 	G4Element*  Cu = new G4Element("Copper"    , "Cu", z = 29., a =  63.55*g/mole);
 	G4Element*  As = new G4Element("Arsenic"   , "As", z = 33., a =  74.92*g/mole);
-	// G4Element*  Br = new G4Element("Bromine"   , "Br", z = 35., a =  79.90*g/mole);
     G4Element*  Zr = new G4Element("Zirconium" , "Zr", z = 40., a =  91.22*g/mole);
 	G4Element*  Mo = new G4Element("Molybdenum", "Mo", z = 42., a =  95.94*g/mole);
-	// G4Element*  I  = new G4Element("Iodine"    , "I" , z = 53., a = 126.90*g/mole);
     G4Element*  Cs = new G4Element("Caesium"   , "Cs", z = 55., a = 132.90*g/mole);
     G4Element*  Ba = new G4Element("Barium"    , "Ba", z = 56., a = 137.33*g/mole);
-	// G4Element*  La = new G4Element("Lanthanium", "La", z = 57., a = 138.90*g/mole);
 	G4Element*  Ta = new G4Element("Tantalum"  , "Ta", z = 73., a = 180.94*g/mole);
 	G4Element*  W  = new G4Element("Tungsten"  , "W" , z = 74., a = 183.84*g/mole);
 	G4Element*  Pb = new G4Element("Lead"      , "Pb", z = 82., a = 207.20*g/mole);
@@ -384,29 +427,52 @@ void DetectorConstruction::DefineMaterials()
 	// Vacuum
 	G4Material* Vacuum = new G4Material("Vacuum", density = 1.e-25*g/cm3, nel = 1);
 	Vacuum -> AddElement(H, 100*perCent);
+    
+    // From NIST database
+    G4NistManager* man = G4NistManager::Instance();
 
-	// Helium Gas
-	G4Material* HeliumGas = new G4Material("HeliumGas", density = 0.18*mg/cm3, nel = 1);
-	HeliumGas -> AddElement(He, 100*perCent);
+    G4Material* G4_Si = man->FindOrBuildMaterial("G4_Si");
+    G4Material* G4_Ti = man->FindOrBuildMaterial("G4_Ti");
+    G4Material* G4_Al = man->FindOrBuildMaterial("G4_Al");
+    G4Material* G4_Fe = man->FindOrBuildMaterial("G4_Fe");
+    G4Material* G4_Cu = man->FindOrBuildMaterial("G4_Cu");
+    G4Material* G4_Mo = man->FindOrBuildMaterial("G4_Mo");
+    G4Material* G4_W = man->FindOrBuildMaterial("G4_W");
+    G4Material* G4_Pb = man->FindOrBuildMaterial("G4_Pb");
+    
+    G4Material* G4_AIR = man->FindOrBuildMaterial("G4_AIR");
+    G4Material* G4_KAPTON = man->FindOrBuildMaterial("G4_KAPTON");
 
-	// Air 
-	G4Material* Air = new G4Material("Air", density = 1.29*mg/cm3, nel = 2);
-	Air -> AddElement(N, 78*perCent);
-	Air -> AddElement(O, 22*perCent);
+    G4Material* G4_SILICON_DIOXIDE = man->FindOrBuildMaterial("G4_SILICON_DIOXIDE");
+    G4Material* G4_LITHIUM_OXIDE = man->FindOrBuildMaterial("G4_LITHIUM_OXIDE");
+    G4Material* G4_LEAD_OXIDE = man->FindOrBuildMaterial("G4_LEAD_OXIDE");
+    G4Material* G4_SODIUM_MONOXIDE = man->FindOrBuildMaterial("G4_SODIUM_MONOXIDE");
+    G4Material* G4_POTASSIUM_OXIDE = man->FindOrBuildMaterial("G4_POTASSIUM_OXIDE");
+    G4Material* G4_ALUMINUM_OXIDE = man->FindOrBuildMaterial("G4_ALUMINUM_OXIDE");
 
-	// Silicon Solid
-	G4Material* SiliconSolid = new G4Material("SiliconSolid", density = 2.33*g/cm3, nel = 1);
-	SiliconSolid -> AddElement(Si, 100*perCent);
+    // Cesium Oxide
+    G4Material* CesiumOxide = new G4Material("CesiumOxide", density = 4.65*g/cm3, nel = 2);
+    CesiumOxide -> AddElement(Cs, natoms=2);
+    CesiumOxide -> AddElement(O,  natoms=1);
+    
+    // Barium Oxide
+    G4Material* BariumOxide = new G4Material("BariumOxide", density = 5.72*g/cm3, nel = 2);
+    BariumOxide -> AddElement(Ba, natoms=1);
+    BariumOxide -> AddElement(O,  natoms=1);
+    
+    // Zirconium Oxide
+    G4Material* ZirconiumOxide = new G4Material("ZirconiumOxide", density = 5.72*g/cm3, nel = 2);
+    ZirconiumOxide -> AddElement(Zr, natoms=1);
+    ZirconiumOxide -> AddElement(O,  natoms=1);
+    
+    // Bismuth Oxide
+    G4Material* BismuthOxide = new G4Material("BismuthOxide", density = 5.72*g/cm3, nel = 2);
+    BismuthOxide -> AddElement(Ba, natoms=1);
+    BismuthOxide -> AddElement(O,  natoms=1);
+    
 
-	// Titanium Solid
-	G4Material* TitaniumSolid = new G4Material("TitaniumSolid", density = 4.51*g/cm3, nel = 1);
-	TitaniumSolid -> AddElement(Ti, 100*perCent);
-
-	// Aluminium Solid
-	G4Material* AluminiumSolid = new G4Material("AluminiumSolid", density = 2.700*g/cm3, nel = 1);
-	AluminiumSolid -> AddElement(Al, 100*perCent);
-
-	// Effective Aluminium Solid
+    
+    // Effective Aluminium Solid
 	G4Material* EffectiveAluminiumSolid = new G4Material("EffectiveAluminiumSolid", density = 0.81*g/cm3, nel = 1);
 	EffectiveAluminiumSolid -> AddElement(Al, 100*perCent);
 	
@@ -414,25 +480,9 @@ void DetectorConstruction::DefineMaterials()
 	G4Material* EffectiveBusAluminiumSolid = new G4Material("EffectiveBusAluminiumSolid", density = 0.3*g/cm3, nel = 1);
 	EffectiveBusAluminiumSolid -> AddElement(Al, 100*perCent);
 
-	// Copper Solid
-	G4Material* CopperSolid = new G4Material("CopperSolid", density = 8.94*g/cm3, nel = 1);
-	CopperSolid -> AddElement(Cu, 100*perCent);
-
-	// Effective Solid
+	// Effective Copper Solid
 	G4Material* EffectiveCopperSolid = new G4Material("EffectiveCopperSolid", density = 2.68*g/cm3, nel = 1);
 	EffectiveCopperSolid -> AddElement(Cu, 100*perCent);
-
-	// Molybdenum Solid
-	G4Material* MolybdenumSolid = new G4Material("MolybdenumSolid", density = 10.28*g/cm3, nel = 1);
-	MolybdenumSolid -> AddElement(Mo, 100*perCent);
-
-	// Tungsten Solid
-	G4Material* TungstenSolid = new G4Material("TungstenSolid", density = 19.25*g/cm3, nel = 1);
-	TungstenSolid -> AddElement(W, 100*perCent);
-
-	// Lead Solid
-	G4Material* LeadSolid = new G4Material("LeadSolid", density = 11.34*g/cm3, nel = 1);
-	LeadSolid -> AddElement(Pb, 100*perCent);
 
 	// Effective Lead Solid
 	G4Material* EffectiveLeadSolid = new G4Material("EffectiveLeadSolid", density = 0.93*g/cm3, nel = 1);
@@ -465,7 +515,6 @@ void DetectorConstruction::DefineMaterials()
 	EffectiveLeadGlass_45_oar70 -> AddElement(Pb, 42.0*perCent);
 
 	// Effective Phillips 3502 Glass. OAR 60% (bulk density 3.3 g/cm3) [Ref: Fraser (1982) NIMA 195, 523]
-	G4int natoms;
 	G4Material* EffectivePhillips3502Glass_oar60 = new G4Material("EffectivePhillips3502Glass_oar60", density = 1.32*g/cm3, nel = 6);
 	EffectivePhillips3502Glass_oar60 -> AddElement(O,  natoms=82);
 	EffectivePhillips3502Glass_oar60 -> AddElement(Si, natoms=30);
@@ -491,83 +540,16 @@ void DetectorConstruction::DefineMaterials()
 	EffectivePhillips3502Glass_oar80 -> AddElement(K,  natoms=7);
 	EffectivePhillips3502Glass_oar80 -> AddElement(Bi, natoms=1);
 	EffectivePhillips3502Glass_oar80 -> AddElement(Pb, natoms=5);
-
-	// Carbon fiber reinforced plastic (CFRP)
-	G4Material* CarbonFiberReinforcedPlastic = new G4Material("CarbonFiberReinforcedPlastic", density = 1.71*g/cm3, nel = 2);
-	CarbonFiberReinforcedPlastic -> AddElement(C, natoms=1);
-	CarbonFiberReinforcedPlastic -> AddElement(H, natoms=2);
-
-	// Carbon fiber reinforced plastic (CFRP) with effective 10% density
-	G4Material* EffectiveCarbonFiberReinforcedPlastic = new G4Material("EffectiveCarbonFiberReinforcedPlastic", density = 0.171*g/cm3, nel = 2);
-	EffectiveCarbonFiberReinforcedPlastic -> AddElement(C, natoms=1);
-	EffectiveCarbonFiberReinforcedPlastic -> AddElement(H, natoms=2);
-
-	// Polymide
-	G4Material* Polymide = new G4Material("Polymide", density = 1.43*g/cm3, nel = 4);
-	Polymide -> AddElement(C, natoms=22);
-	Polymide -> AddElement(H, natoms=10);
-	Polymide -> AddElement(N, natoms=2);
-	Polymide -> AddElement(O, natoms=5);
 	
-	// Silicon Oxide
-	G4Material* SiliconOxide = new G4Material("SiliconOxide", density = 2.65*g/cm3, nel = 2);
-	SiliconOxide -> AddElement(Si, natoms=1);
-	SiliconOxide -> AddElement(O,  natoms=2);
-	
-    // Lead Oxide
-    G4Material* LeadOxide = new G4Material("LeadOxide", density = 9.53*g/cm3, nel = 2);
-    LeadOxide -> AddElement(Pb, natoms=1);
-    LeadOxide -> AddElement(O,  natoms=1);
-
-    // Lithium Oxide
-    G4Material* LithiumOxide = new G4Material("LithiumOxide", density = 2.01*g/cm3, nel = 2);
-    LithiumOxide -> AddElement(Li, natoms=2);
-    LithiumOxide -> AddElement(O,  natoms=1);
-
-    // Sodium Oxide
-    G4Material* SodiumOxide = new G4Material("SodiumOxide", density = 2.27*g/cm3, nel = 2);
-    SodiumOxide -> AddElement(Na, natoms=2);
-    SodiumOxide -> AddElement(O,  natoms=1);
-
-    // Potassium Oxide
-    G4Material* PotassiumOxide = new G4Material("PotassiumOxide", density = 2.35*g/cm3, nel = 2);
-    PotassiumOxide -> AddElement(K, natoms=2);
-    PotassiumOxide -> AddElement(O,  natoms=1);
-    
-    // Cesium Oxide
-    G4Material* CesiumOxide = new G4Material("CesiumOxide", density = 4.65*g/cm3, nel = 2);
-    CesiumOxide -> AddElement(Cs, natoms=2);
-    CesiumOxide -> AddElement(O,  natoms=1);
-
-    // Aluminium Oxide
-    G4Material* AluminiumOxide = new G4Material("AluminiumOxide", density = 3.95*g/cm3, nel = 2);
-    AluminiumOxide -> AddElement(Al, natoms=2);
-    AluminiumOxide -> AddElement(O,  natoms=3);
-
-    // Barium Oxide
-    G4Material* BariumOxide = new G4Material("BariumOxide", density = 5.72*g/cm3, nel = 2);
-    BariumOxide -> AddElement(Ba, natoms=1);
-    BariumOxide -> AddElement(O,  natoms=1);
-
-    // Zirconium Oxide
-    G4Material* ZirconiumOxide = new G4Material("ZirconiumOxide", density = 5.72*g/cm3, nel = 2);
-    ZirconiumOxide -> AddElement(Zr, natoms=1);
-    ZirconiumOxide -> AddElement(O,  natoms=1);
-
-    // Bismuth Oxide
-    G4Material* BismuthOxide = new G4Material("BismuthOxide", density = 5.72*g/cm3, nel = 2);
-    BismuthOxide -> AddElement(Ba, natoms=1);
-    BismuthOxide -> AddElement(O,  natoms=1);
-    
     // Hamamatsu Lead Glass OAR 0% (bulk density 3.9 g/cm3)
     G4Material* HamamatsuLeadGlass = new G4Material("HamamatsuLeadGlass", density = 3.9*g/cm3, ncomponents=10);
-    HamamatsuLeadGlass -> AddMaterial(SiliconOxide, fractionmass=42*perCent);
-    HamamatsuLeadGlass -> AddMaterial(LeadOxide, fractionmass=43*perCent);
-    HamamatsuLeadGlass -> AddMaterial(LithiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass -> AddMaterial(SodiumOxide, fractionmass=2*perCent);
-    HamamatsuLeadGlass -> AddMaterial(PotassiumOxide, fractionmass=3*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_SILICON_DIOXIDE, fractionmass=42*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_LEAD_OXIDE, fractionmass=43*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_LITHIUM_OXIDE, fractionmass=1*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_SODIUM_MONOXIDE, fractionmass=2*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_POTASSIUM_OXIDE, fractionmass=3*perCent);
+    HamamatsuLeadGlass -> AddMaterial(G4_ALUMINUM_OXIDE, fractionmass=1*perCent);
     HamamatsuLeadGlass -> AddMaterial(CesiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass -> AddMaterial(AluminiumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass -> AddMaterial(BariumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass -> AddMaterial(ZirconiumOxide, fractionmass=3*perCent);
     HamamatsuLeadGlass -> AddMaterial(BismuthOxide, fractionmass=3*perCent);
@@ -575,13 +557,13 @@ void DetectorConstruction::DefineMaterials()
 
     // Hamamatsu Lead Glass OAR 70% (bulk density 3.9 g/cm3)
     G4Material* HamamatsuLeadGlass_oar70 = new G4Material("HamamatsuLeadGlass_oar70", density = 1.17*g/cm3, ncomponents=10);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(SiliconOxide, fractionmass=42*perCent);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(LeadOxide, fractionmass=43*perCent);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(LithiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(SodiumOxide, fractionmass=2*perCent);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(PotassiumOxide, fractionmass=3*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_SILICON_DIOXIDE, fractionmass=42*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_LEAD_OXIDE, fractionmass=43*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_LITHIUM_OXIDE, fractionmass=1*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_SODIUM_MONOXIDE, fractionmass=2*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_POTASSIUM_OXIDE, fractionmass=3*perCent);
+    HamamatsuLeadGlass_oar70 -> AddMaterial(G4_ALUMINUM_OXIDE, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar70 -> AddMaterial(CesiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass_oar70 -> AddMaterial(AluminiumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar70 -> AddMaterial(BariumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar70 -> AddMaterial(ZirconiumOxide, fractionmass=3*perCent);
     HamamatsuLeadGlass_oar70 -> AddMaterial(BismuthOxide, fractionmass=3*perCent);
@@ -589,16 +571,27 @@ void DetectorConstruction::DefineMaterials()
     
     // Hamamatsu Lead Glass OAR 75% (bulk density 3.9 g/cm3)
     G4Material* HamamatsuLeadGlass_oar75 = new G4Material("HamamatsuLeadGlass_oar75", density = 0.975*g/cm3, ncomponents=10);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(SiliconOxide, fractionmass=42*perCent);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(LeadOxide, fractionmass=43*perCent);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(LithiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(SodiumOxide, fractionmass=2*perCent);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(PotassiumOxide, fractionmass=3*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_SILICON_DIOXIDE, fractionmass=42*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_LEAD_OXIDE, fractionmass=43*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_LITHIUM_OXIDE, fractionmass=1*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_SODIUM_MONOXIDE, fractionmass=2*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_POTASSIUM_OXIDE, fractionmass=3*perCent);
+    HamamatsuLeadGlass_oar75 -> AddMaterial(G4_ALUMINUM_OXIDE, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar75 -> AddMaterial(CesiumOxide, fractionmass=1*perCent);
-    HamamatsuLeadGlass_oar75 -> AddMaterial(AluminiumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar75 -> AddMaterial(BariumOxide, fractionmass=1*perCent);
     HamamatsuLeadGlass_oar75 -> AddMaterial(ZirconiumOxide, fractionmass=3*perCent);
     HamamatsuLeadGlass_oar75 -> AddMaterial(BismuthOxide, fractionmass=3*perCent);
+
+    
+    // Carbon fiber reinforced plastic (CFRP)
+    G4Material* CarbonFiberReinforcedPlastic = new G4Material("CarbonFiberReinforcedPlastic", density = 1.71*g/cm3, nel = 2);
+    CarbonFiberReinforcedPlastic -> AddElement(C, natoms=1);
+    CarbonFiberReinforcedPlastic -> AddElement(H, natoms=2);
+    
+    // Carbon fiber reinforced plastic (CFRP) with effective 10% density
+    G4Material* EffectiveCarbonFiberReinforcedPlastic = new G4Material("EffectiveCarbonFiberReinforcedPlastic", density = 0.171*g/cm3, nel = 2);
+    EffectiveCarbonFiberReinforcedPlastic -> AddElement(C, natoms=1);
+    EffectiveCarbonFiberReinforcedPlastic -> AddElement(H, natoms=2);
 
 	// Diglycidyl Ether of Bisphenol A (First compound of epoxy resin Epotek 301-1)
 	G4Material* Epoxy_1 = new G4Material("Epoxy_1", density = 1.16*g/cm3, nel = 3);
@@ -626,14 +619,14 @@ void DetectorConstruction::DefineMaterials()
 	
 	// FR4 PCB material
 	G4Material* FR4 = new G4Material("FR4", density = 1.8*g/cm3, ncomponents=2);
-	FR4 -> AddMaterial(SiliconOxide, fractionmass=60*perCent);
+	FR4 -> AddMaterial(G4_SILICON_DIOXIDE, fractionmass=60*perCent);
 	FR4 -> AddMaterial(Epoxy_Resin,  fractionmass=40*perCent);
 	
 
 	// Effective dummy panel material
 	G4Material* EffectiveDummyPanelSolid = new G4Material("EffectiveDummyPanelSolid", density = 1.0*g/cm3, ncomponents=2);
-	EffectiveDummyPanelSolid -> AddMaterial(AluminiumSolid, fractionmass=92.4*perCent);
-	EffectiveDummyPanelSolid -> AddMaterial(LeadSolid,  fractionmass=7.6*perCent);
+	EffectiveDummyPanelSolid -> AddMaterial(G4_Al, fractionmass=92.4*perCent);
+	EffectiveDummyPanelSolid -> AddMaterial(G4_Pb,  fractionmass=7.6*perCent);
 
 
 	// Default materials of the World: vacuum
@@ -652,7 +645,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4SolidStore::GetInstance()->Clean();
 
 
-	// 0. Experimental hall (world volume)
+	// 1. Experimental hall (world volume)
 	// Solid
 	G4Box* experimentalHall_box = new G4Box("experimentalHall_box",
 									  		worldSide/2., worldSide/2., worldSide/2.);
@@ -668,665 +661,579 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 											  false,
 											  0);
 
-    // Module parameterisation
-    G4int pixelArray_x  = pixel_x;
-    G4int pixelArray_y  = pixel_y;
-    G4double pixelSize_x = sdd_x/pixel_x;
-    G4double pixelSize_y = sdd_y/pixel_y;
+    // Calculate necessary quantities
+    G4int n_sdd_total = n_sdd_per_module*n_modules;
+    
+    G4double spacing_sdd_x = (moduleframe_side_x - internalframe_side_x*2 - n_sdd_x*sdd_x) / (n_sdd_x-1);
+    G4double spacing_sdd_y = (moduleframe_side_y - internalframe_side_y*2 - n_sdd_y*sdd_y) / (n_sdd_y-1);
+
+    G4double plate_z = thermalblanketA_thick + thermalblanketB_thick + coll_thick + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick
+                        + sdd_thick + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick;
+    
+    G4cout << "MODULE CONFIGURATION:" << G4endl;
+    G4cout << "No. of SDDs per X side: "<< n_sdd_x << G4endl;
+    G4cout << "No. of SDDs per Y side: "<< n_sdd_y << G4endl;
+    G4cout << "No. of SDDs per module: "<< n_sdd_per_module << G4endl;
+    G4cout << "No. of modules: "<< n_modules << G4endl;
+    G4cout << "Total no. of SDDs: "<< n_sdd_total << G4endl;
+    G4cout << G4endl;
+    G4cout << "MODULE DIMENSIONS: " << G4endl;
+    G4cout << "Module X side (mm): "<< moduleframe_side_x/mm << G4endl;
+    G4cout << "Module Y side (mm): "<< moduleframe_side_y/mm << G4endl;
+    G4cout << "Internal frame on X side (mm): "<< internalframe_side_x/mm << G4endl;
+    G4cout << "Internal frame on Y side (mm): "<< internalframe_side_y/mm << G4endl;
+    G4cout << "Spacing btw. SDDs on X side (mm): "<< spacing_sdd_x/mm << G4endl;
+    G4cout << "Spacing btw. SDDs on Y side (mm): "<< spacing_sdd_y/mm << G4endl;
+    G4cout << "Module thickness (mm): "<< plate_z/mm << G4endl;
 
     
-	G4int nModules  = moduleArray_x*moduleArray_y;
-	G4cout << "Number of modules: " << nModules << "; "
-                                    << "Array: "
-                                    << moduleArray_x << " x " << moduleArray_y << G4endl;
+    // 2. SDD
+    // Solid
+    G4double plateSdd_x = moduleframe_side_x;
+    G4double plateSdd_y = moduleframe_side_y;
+    G4double plateSdd_z = sdd_thick;
     
-	G4double moduleSpacing_x = sdd_x + sideframe2_width;
-	G4double moduleSpacing_y = sdd_y + sideframe2_width;
-	G4double plate_x = moduleArray_x * sdd_x + (moduleArray_x + 1) * sideframe2_width;
-	G4double plate_y = moduleArray_y * sdd_y + (moduleArray_y + 1) * sideframe2_width;
-	G4cout << "Panel dimensions: x = " << plate_x/cm << " cm; y = " << plate_y/cm  << " cm" << G4endl;
+    G4Box* plateSdd_box = new G4Box("plateSdd_box",
+                                    plateSdd_x/2., plateSdd_y/2., plateSdd_z/2.);
     
-    G4int nPixelPerModule  = pixelArray_x*pixelArray_y;
-    G4cout << "Number of pixels per module: " << nPixelPerModule << "; "
-                                    << "Array: "
-                                    << pixelArray_x << " x " << pixelArray_y << G4endl;
-    G4int nXPixels = pixelArray_x * moduleArray_x;
-    G4int nYPixels = pixelArray_y * moduleArray_y;
-    G4int nPixels  = nXPixels * nYPixels;
-    G4cout << "Number of total pixels: " << nPixels << "; "
-                                         << "Array: "
-                                         << nXPixels << " x " << nYPixels << G4endl;
+    // Logical
+    plateSdd_log = new G4LogicalVolume(plateSdd_box,
+                                       moduleframeMaterial, "plateSdd_log", 0, 0, 0);
+    
+    
+    // Physical
+    plateSdd00_phys = new G4PVPlacement(moduleRotation(0),
+                                      moduleLocation(0),
+                                      plateSdd_log,
+                                      "plateSdd00_phys",
+                                      experimentalHall_log,
+                                      false,
+                                      0);
 
+    plateSdd01_phys = new G4PVPlacement(moduleRotation(1),
+                                       moduleLocation(1),
+                                       plateSdd_log,
+                                       "plateSdd01_phys",
+                                       experimentalHall_log,
+                                       false,
+                                       0);
 
-
-	// . SDD detector
-	G4double plateSdd_x = plate_x;
-	G4double plateSdd_y = plate_y;
-	G4double plateSdd_z = sdd_thick;
-	
-	G4Box* plateSdd_box = new G4Box("plateSdd_box",
-									plateSdd_x/2., plateSdd_y/2., plateSdd_z/2.);
-	
-	plateSdd_log = new G4LogicalVolume(plateSdd_box,
-									   sideframe2Material, "plateSdd_log", 0, 0, 0);
-	G4double sddPos_x = 0.0*cm;
-	G4double sddPos_y = 0.0*cm;
-	G4double sddPos_z = 0.0*cm;
-	plateSdd_phys = new G4PVPlacement(0,
-									  G4ThreeVector(sddPos_x, sddPos_y, sddPos_z),
-									  plateSdd_log,
-									  "plateSdd_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
+    
 	// Solid
 	G4Box* sdd_box = new G4Box("SDD_box",
-							   pixelSize_x/2., pixelSize_y/2., sdd_thick/2.);
+							   sdd_x/2., sdd_y/2., sdd_thick/2.);
 	// Logical
 	sdd_log = new G4LogicalVolume(sdd_box,
 								  sddMaterial, "SDD_log", 0, 0, 0);
 	// Physical
-	sddParam = new SDDParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y,
-                                       pixelSize_x, pixelSize_y, pixelArray_x, pixelArray_y);
-	
-//    sddParam = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
+    sddParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
 
 	sdd_phys = new G4PVParameterised("sdd_phys",       		// their name
 									 sdd_log,    	        // their logical volume
 									 plateSdd_log,  		// Mother logical volume
 									 kYAxis,          		// Are placed along this axis 
-//									 nModules,    		// Number of chambers
-                                     nPixels,    		// Number of chambers
+                                     16,    		// Number of chambers
 									 sddParam);   		// The parametrisation
 
 
-	// // . Collimator
-	// 
-	G4double plateColl_x = plate_x;
-	G4double plateColl_y = plate_y;
-	G4double plateColl_z = coll_thick;
-	
-	G4Box* plateColl_box = new G4Box("plateColl_box",
-									plateColl_x/2., plateColl_y/2., plateColl_z/2.);
-	
-	plateColl_log = new G4LogicalVolume(plateColl_box,
-									   sideframe2Material, "plateColl_log", 0, 0, 0);
-	G4double collPos_x = sddPos_x;
-	G4double collPos_y = sddPos_y;
-	G4double collPos_z = coll_thick/2. + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + coating_thick + sdd_thick/2.; 
-	plateColl_phys = new G4PVPlacement(0,
-									  G4ThreeVector(collPos_x, collPos_y, collPos_z),
-									  plateColl_log,
-									  "plateColl_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-	// Solid
-	G4double coll_x = sdd_x;
-	G4double coll_y = sdd_y;
-	G4Box* coll_box = new G4Box("coll_box",
-								coll_x/2., coll_y/2., coll_thick/2.);
-	// Logical
-	coll_log = new G4LogicalVolume(coll_box,
-								   collMaterial, "coll_log", 0, 0, 0);
-	// Physical
-	collParam = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	
-	coll_phys = new G4PVParameterised("coll_phys",       		// their name
-									 coll_log,    	        // their logical volume
-									 plateColl_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 collParam);   		// The parametrisation
+    
+	// 3. Collimator
+    G4double plateColl_x = moduleframe_side_x;
+    G4double plateColl_y = moduleframe_side_y;
+    G4double plateColl_z = coll_thick;
+    
+    G4Box* plateColl_box = new G4Box("plateColl_box",
+                                     plateColl_x/2., plateColl_y/2., plateColl_z/2.);
+    
+    // Logical
+    plateColl_log = new G4LogicalVolume(plateColl_box,
+                                        moduleframeMaterial, "plateColl_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double coll_loc_z = sdd_thick/2. + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick + coll_thick/2.;
+    plateColl00_phys = new G4PVPlacement(moduleRotation(0),
+                                        G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),coll_loc_z),
+                                        plateColl_log,
+                                        "plateColl00_phys",
+                                        experimentalHall_log,
+                                        false,
+                                        0);
+    
+    plateColl01_phys = new G4PVPlacement(moduleRotation(1),
+                                        G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),coll_loc_z),
+                                        plateColl_log,
+                                        "plateColl01_phys",
+                                        experimentalHall_log,
+                                        false,
+                                        0);
+
+    // Solid
+    G4Box* coll_box = new G4Box("coll_box",
+                                sdd_x/2., sdd_y/2., coll_thick/2.);
+    // Logical
+    coll_log = new G4LogicalVolume(coll_box,
+                                   collMaterial, "coll_log", 0, 0, 0);
+    // Physical
+    collParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    coll_phys = new G4PVParameterised("coll_phys",               // their name
+                                      coll_log,                // their logical volume
+                                      plateColl_log,          // Mother logical volume
+                                      kYAxis,                  // Are placed along this axis
+                                      16,            // Number of chambers
+                                      collParam);           // The parametrisation
+
 									
-									
-									
+    
+
 	// 4. Thermal blanket
 	// 4a. First layer
 	// Solid
-	G4double thermalblanket1_x = plate_x;
-	G4double thermalblanket1_y = plate_y;
-	G4Box* thermalblanket1_box = new G4Box("thermalblanket1_box", 
-									thermalblanket1_x/2., thermalblanket1_y/2., thermalblanket1_thick/2.);
-	// Logical
-	thermalblanket1_log = new G4LogicalVolume(thermalblanket1_box,
-														thermalblanket1Material, "thermalblanket1_log", 0, 0, 0);
-	// Physical
-	G4double thermalblanket1Pos_x = sddPos_x;
-	G4double thermalblanket1Pos_y = sddPos_y;
-	G4double thermalblanket1Pos_z = thermalblanket1_thick/2. + thermalblanket2_thick + coll_thick + coating_thick + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + sdd_thick/2.; 
-	thermalblanket1_phys = new G4PVPlacement(0,
-								      G4ThreeVector(thermalblanket1Pos_x, thermalblanket1Pos_y, thermalblanket1Pos_z),
-								      thermalblanket1_log,
-								      "thermalblanket1_phys", 
-								      experimentalHall_log, 
-								      false, 
-								      0);
+    G4double thermalblanketA_x = moduleframe_side_x;
+    G4double thermalblanketA_y = moduleframe_side_y;
+    G4double thermalblanketA_z = thermalblanketA_thick;
+    
+    G4Box* thermalblanketA_box = new G4Box("thermalblanketA_box",
+                                     thermalblanketA_x/2., thermalblanketA_y/2., thermalblanketA_z/2.);
+    
+    // Logical
+    thermalblanketA_log = new G4LogicalVolume(thermalblanketA_box,
+                                        thermalblanketAMaterial, "thermalblanketA_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double thermalblanketA_loc_z = sdd_thick/2. + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick + coll_thick + thermalblanketB_thick + thermalblanketA_thick/2.;
+    thermalblanketA00_phys = new G4PVPlacement(moduleRotation(0),
+                                        G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),thermalblanketA_loc_z),
+                                        thermalblanketA_log,
+                                        "thermalblanketA00_phys",
+                                        experimentalHall_log,
+                                        false,
+                                        0);
+    
+    thermalblanketA01_phys = new G4PVPlacement(moduleRotation(1),
+                                        G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),thermalblanketA_loc_z),
+                                        thermalblanketA_log,
+                                        "thermalblanketA01_phys",
+                                        experimentalHall_log,
+                                        false,
+                                        0);
 
 	// 4b. Second layer
 	// Solid
-	G4double thermalblanket2_x = plate_x;
-	G4double thermalblanket2_y = plate_y;
-	G4Box* thermalblanket2_box = new G4Box("thermalblanket2_box", 
-									thermalblanket2_x/2., thermalblanket2_y/2., thermalblanket2_thick/2.);
-	// Logical
-	thermalblanket2_log = new G4LogicalVolume(thermalblanket2_box,
-														thermalblanket2Material, "thermalblanket2_log", 0, 0, 0);
-	// Physical
-	G4double thermalblanket2Pos_x = sddPos_x;
-	G4double thermalblanket2Pos_y = sddPos_y;
-	G4double thermalblanket2Pos_z = thermalblanket2_thick/2. + coll_thick + coating_thick + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + sdd_thick/2.; 
-	thermalblanket2_phys = new G4PVPlacement(0,
-									  G4ThreeVector(thermalblanket2Pos_x, thermalblanket2Pos_y, thermalblanket2Pos_z),
-									  thermalblanket2_log,
-									  "thermalblanket2_phys", 
-									  experimentalHall_log, 
-									  false, 
-									  0);
-
-	// . Coating 
-	G4double plateCoating_x = plate_x;
-	G4double plateCoating_y = plate_y;
-	G4double plateCoating_z = coating_thick;
-	
-	G4Box* plateCoating_box = new G4Box("plateCoating_box",
-									plateCoating_x/2., plateCoating_y/2., plateCoating_z/2.);
-	
-	plateCoating_log = new G4LogicalVolume(plateCoating_box,
-									   sideframe2Material, "plateCoating_log", 0, 0, 0);
-	G4double coatingPos_x = sddPos_x;
-	G4double coatingPos_y = sddPos_y;
-	G4double coatingPos_z = coating_thick/2. + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + sdd_thick/2.; 
-	plateCoating_phys = new G4PVPlacement(0,
-									  G4ThreeVector(coatingPos_x, coatingPos_y, coatingPos_z),
-									  plateCoating_log,
-									  "plateCoating_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double coating_x = sdd_x;
-	G4double coating_y = sdd_y;
-	G4Box* coating_box = new G4Box("coating_box", 
-									coating_x/2., coating_y/2., coating_thick/2.);
-	// Logical
-	coating_log = new G4LogicalVolume(coating_box,
-														coatingMaterial, "coating_log", 0, 0, 0);
-	// Physical
-	coatingParam = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	  
-	coating_phys = new G4PVParameterised("coating_phys",        // their name
-									 coating_log,    	        // their logical volume
-									 plateCoating_log,  		// Mother logical volume
-									 kYAxis,          			// Are placed along this axis 
-									 nModules,    			// Number of chambers
-									 coatingParam);   			// The parametrisation
+    G4double thermalblanketB_x = moduleframe_side_x;
+    G4double thermalblanketB_y = moduleframe_side_y;
+    G4double thermalblanketB_z = thermalblanketB_thick;
+    
+    G4Box* thermalblanketB_box = new G4Box("thermalblanketB_box",
+                                           thermalblanketB_x/2., thermalblanketB_y/2., thermalblanketB_z/2.);
+    
+    // Logical
+    thermalblanketB_log = new G4LogicalVolume(thermalblanketB_box,
+                                              thermalblanketBMaterial, "thermalblanketB_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double thermalblanketB_loc_z = sdd_thick/2. + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick + coll_thick + thermalblanketB_thick/2.;
+    thermalblanketB00_phys = new G4PVPlacement(moduleRotation(0),
+                                              G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),thermalblanketB_loc_z),
+                                              thermalblanketB_log,
+                                              "thermalblanketB00_phys",
+                                              experimentalHall_log,
+                                              false,
+                                              0);
+    
+    thermalblanketB01_phys = new G4PVPlacement(moduleRotation(1),
+                                              G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),thermalblanketB_loc_z),
+                                              thermalblanketB_log,
+                                              "thermalblanketB01_phys",
+                                              experimentalHall_log,
+                                              false,
+                                              0);
 
 
-	// . Deadlayer1 
-	G4double plateDeadlayer1_x = plate_x;
-	G4double plateDeadlayer1_y = plate_y;
-	G4double plateDeadlayer1_z = deadlayer1_thick;
-	
-	G4Box* plateDeadlayer1_box = new G4Box("plateDeadlayer1_box",
-									plateDeadlayer1_x/2., plateDeadlayer1_y/2., plateDeadlayer1_z/2.);
-	
-	plateDeadlayer1_log = new G4LogicalVolume(plateDeadlayer1_box,
-									   sideframe2Material, "plateDeadlayer1_log", 0, 0, 0);
-	G4double deadlayer1Pos_x = sddPos_x;
-	G4double deadlayer1Pos_y = sddPos_y;
-	G4double deadlayer1Pos_z = deadlayer1_thick/2. + deadlayer2_thick + deadlayer3_thick + sdd_thick/2.; 
-	plateDeadlayer1_phys = new G4PVPlacement(0,
-									  G4ThreeVector(deadlayer1Pos_x, deadlayer1Pos_y, deadlayer1Pos_z),
-									  plateDeadlayer1_log,
-									  "plateDeadlayer1_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
+ 
+	// 5. Deadlayer A
+    G4double plateDeadlayerA_x = moduleframe_side_x;
+    G4double plateDeadlayerA_y = moduleframe_side_y;
+    G4double plateDeadlayerA_z = deadlayerA_thick;
+    
+    G4Box* plateDeadlayerA_box = new G4Box("plateDeadlayerA_box",
+                                           plateDeadlayerA_x/2., plateDeadlayerA_y/2., plateDeadlayerA_z/2.);
+    
+    // Logical
+    plateDeadlayerA_log = new G4LogicalVolume(plateDeadlayerA_box,
+                                              moduleframeMaterial, "plateDeadlayerA_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double deadlayerA_loc_z = sdd_thick/2. + deadlayerC_thick + deadlayerB_thick + deadlayerA_thick/2.;
+    plateDeadlayerA00_phys = new G4PVPlacement(moduleRotation(0),
+                                               G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),deadlayerA_loc_z),
+                                               plateDeadlayerA_log,
+                                               "plateDeadlayerA00_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    plateDeadlayerA01_phys = new G4PVPlacement(moduleRotation(1),
+                                               G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),deadlayerA_loc_z),
+                                               plateDeadlayerA_log,
+                                               "plateDeadlayerA01_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    // Solid
+    G4Box* deadlayerA_box = new G4Box("deadlayerA_box",
+                                sdd_x/2., sdd_y/2., deadlayerA_thick/2.);
+    // Logical
+    deadlayerA_log = new G4LogicalVolume(deadlayerA_box,
+                                   deadlayerAMaterial, "coll_log", 0, 0, 0);
+    // Physical
+    deadlayerAParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    deadlayerA_phys = new G4PVParameterised("deadlayerA_phys",      // their name
+                                      deadlayerA_log,               // their logical volume
+                                      plateDeadlayerA_log,          // Mother logical volume
+                                      kYAxis,                       // Are placed along this axis
+                                      16,                           // Number of chambers
+                                      deadlayerAParam);             // The parametrisation
 
-	// Solid
-	G4double deadlayer1_x = sdd_x;
-	G4double deadlayer1_y = sdd_y;
-	G4Box* deadlayer1_box = new G4Box("deadlayer1_box", 
-									deadlayer1_x/2., deadlayer1_y/2., deadlayer1_thick/2.);
-	// Logical
-	deadlayer1_log = new G4LogicalVolume(deadlayer1_box,
-														deadlayer1Material, "deadlayer1_log", 0, 0, 0);
-	// Physical
-	deadlayer1Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	  
-	deadlayer1_phys = new G4PVParameterised("deadlayer1_phys",      // their name
-									 deadlayer1_log,    	        // their logical volume
-									 plateDeadlayer1_log,  			// Mother logical volume
-									 kYAxis,          				// Are placed along this axis 
-									 nModules,    				// Number of chambers
-									 deadlayer1Param);   			// The parametrisation
-
-
-	// . Deadlayer2 
-	G4double plateDeadlayer2_x = plate_x;
-	G4double plateDeadlayer2_y = plate_y;
-	G4double plateDeadlayer2_z = deadlayer2_thick;
-	
-	G4Box* plateDeadlayer2_box = new G4Box("plateDeadlayer2_box",
-									plateDeadlayer2_x/2., plateDeadlayer2_y/2., plateDeadlayer2_z/2.);
-	
-	plateDeadlayer2_log = new G4LogicalVolume(plateDeadlayer2_box,
-									   sideframe2Material, "plateDeadlayer2_log", 0, 0, 0);
-	G4double deadlayer2Pos_x = sddPos_x;
-	G4double deadlayer2Pos_y = sddPos_y;
-	G4double deadlayer2Pos_z = deadlayer2_thick/2. + deadlayer3_thick + sdd_thick/2.; 
-	plateDeadlayer2_phys = new G4PVPlacement(0,
-									  G4ThreeVector(deadlayer2Pos_x, deadlayer2Pos_y, deadlayer2Pos_z),
-									  plateDeadlayer2_log,
-									  "plateDeadlayer2_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double deadlayer2_x = sdd_x;
-	G4double deadlayer2_y = sdd_y;
-	G4Box* deadlayer2_box = new G4Box("deadlayer2_box", 
-									deadlayer2_x/2., deadlayer2_y/2., deadlayer2_thick/2.);
-	// Logical
-	deadlayer2_log = new G4LogicalVolume(deadlayer2_box,
-														deadlayer2Material, "deadlayer2_log", 0, 0, 0);
-	// Physical
-	deadlayer2Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	  
-	deadlayer2_phys = new G4PVParameterised("deadlayer2_phys",      // their name
-									 deadlayer2_log,    	        // their logical volume
-									 plateDeadlayer2_log,  			// Mother logical volume
-									 kYAxis,          				// Are placed along this axis 
-									 nModules,    				// Number of chambers
-									 deadlayer2Param);   			// The parametrisation
-
-
-	// . Deadlayer3 
-	G4double plateDeadlayer3_x = plate_x;
-	G4double plateDeadlayer3_y = plate_y;
-	G4double plateDeadlayer3_z = deadlayer3_thick;
-	
-	G4Box* plateDeadlayer3_box = new G4Box("plateDeadlayer3_box",
-									plateDeadlayer3_x/2., plateDeadlayer3_y/2., plateDeadlayer3_z/2.);
-	
-	plateDeadlayer3_log = new G4LogicalVolume(plateDeadlayer3_box,
-									   sideframe2Material, "plateDeadlayer3_log", 0, 0, 0);
-	G4double deadlayer3Pos_x = sddPos_x;
-	G4double deadlayer3Pos_y = sddPos_y;
-	G4double deadlayer3Pos_z = deadlayer3_thick/2. + sdd_thick/2.; 
-	plateDeadlayer3_phys = new G4PVPlacement(0,
-									  G4ThreeVector(deadlayer3Pos_x, deadlayer3Pos_y, deadlayer3Pos_z),
-									  plateDeadlayer3_log,
-									  "plateDeadlayer3_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double deadlayer3_x = sdd_x;
-	G4double deadlayer3_y = sdd_y;
-	G4Box* deadlayer3_box = new G4Box("deadlayer3_box", 
-									deadlayer3_x/2., deadlayer3_y/2., deadlayer3_thick/2.);
-	// Logical
-	deadlayer3_log = new G4LogicalVolume(deadlayer3_box,
-														deadlayer3Material, "deadlayer3_log", 0, 0, 0);
-	// Physical
-	deadlayer3Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	  
-	deadlayer3_phys = new G4PVParameterised("deadlayer3_phys",      // their name
-									 deadlayer3_log,    	        // their logical volume
-									 plateDeadlayer3_log,  			// Mother logical volume
-									 kYAxis,          				// Are placed along this axis 
-									 nModules,    				// Number of chambers
-									 deadlayer3Param);   			// The parametrisation
+    // 6. Deadlayer B
+    G4double plateDeadlayerB_x = moduleframe_side_x;
+    G4double plateDeadlayerB_y = moduleframe_side_y;
+    G4double plateDeadlayerB_z = deadlayerB_thick;
+    
+    G4Box* plateDeadlayerB_box = new G4Box("plateDeadlayerB_box",
+                                           plateDeadlayerB_x/2., plateDeadlayerB_y/2., plateDeadlayerB_z/2.);
+    
+    // Logical
+    plateDeadlayerB_log = new G4LogicalVolume(plateDeadlayerB_box,
+                                              moduleframeMaterial, "plateDeadlayerB_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double deadlayerB_loc_z = sdd_thick/2. + deadlayerC_thick + deadlayerB_thick/2.;
+    plateDeadlayerB00_phys = new G4PVPlacement(moduleRotation(0),
+                                               G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),deadlayerB_loc_z),
+                                               plateDeadlayerB_log,
+                                               "plateDeadlayerB00_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    plateDeadlayerB01_phys = new G4PVPlacement(moduleRotation(1),
+                                               G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),deadlayerB_loc_z),
+                                               plateDeadlayerB_log,
+                                               "plateDeadlayerB01_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    // Solid
+    G4Box* deadlayerB_box = new G4Box("deadlayerB_box",
+                                      sdd_x/2., sdd_y/2., deadlayerB_thick/2.);
+    // Logical
+    deadlayerB_log = new G4LogicalVolume(deadlayerB_box,
+                                         deadlayerBMaterial, "coll_log", 0, 0, 0);
+    // Physical
+    deadlayerBParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    deadlayerB_phys = new G4PVParameterised("deadlayerB_phys",      // their name
+                                            deadlayerB_log,               // their logical volume
+                                            plateDeadlayerB_log,          // Mother logical volume
+                                            kYAxis,                       // Are placed along this axis
+                                            16,                           // Number of chambers
+                                            deadlayerBParam);             // The parametrisation
 
 
-	// . PCB shielding layer
-	G4double platePcbs_x = plate_x;
-	G4double platePcbs_y = plate_y;
+    // 5. Deadlayer A
+    G4double plateDeadlayerC_x = moduleframe_side_x;
+    G4double plateDeadlayerC_y = moduleframe_side_y;
+    G4double plateDeadlayerC_z = deadlayerC_thick;
+    
+    G4Box* plateDeadlayerC_box = new G4Box("plateDeadlayerC_box",
+                                           plateDeadlayerC_x/2., plateDeadlayerC_y/2., plateDeadlayerC_z/2.);
+    
+    // Logical
+    plateDeadlayerC_log = new G4LogicalVolume(plateDeadlayerC_box,
+                                              moduleframeMaterial, "plateDeadlayerC_log", 0, 0, 0);
+    
+    
+    // Physical
+    G4double deadlayerC_loc_z = sdd_thick/2. + deadlayerC_thick/2.;
+    plateDeadlayerC00_phys = new G4PVPlacement(moduleRotation(0),
+                                               G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),deadlayerC_loc_z),
+                                               plateDeadlayerC_log,
+                                               "plateDeadlayerC00_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    plateDeadlayerC01_phys = new G4PVPlacement(moduleRotation(1),
+                                               G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),deadlayerC_loc_z),
+                                               plateDeadlayerC_log,
+                                               "plateDeadlayerC01_phys",
+                                               experimentalHall_log,
+                                               false,
+                                               0);
+    
+    // Solid
+    G4Box* deadlayerC_box = new G4Box("deadlayerC_box",
+                                      sdd_x/2., sdd_y/2., deadlayerC_thick/2.);
+    // Logical
+    deadlayerC_log = new G4LogicalVolume(deadlayerC_box,
+                                         deadlayerCMaterial, "coll_log", 0, 0, 0);
+    // Physical
+    deadlayerCParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    deadlayerC_phys = new G4PVParameterised("deadlayerC_phys",      // their name
+                                            deadlayerC_log,               // their logical volume
+                                            plateDeadlayerC_log,          // Mother logical volume
+                                            kYAxis,                       // Are placed along this axis
+                                            16,                           // Number of chambers
+                                            deadlayerCParam);             // The parametrisation
+
+    // 8. PCB shielding layer
+	G4double platePcbs_x = moduleframe_side_x;
+	G4double platePcbs_y = moduleframe_side_y;
 	G4double platePcbs_z = pcbs_thick;
 
 	G4Box* platePcbs_box = new G4Box("platePcbs_box",
 									platePcbs_x/2., platePcbs_y/2., platePcbs_z/2.);
 
 	platePcbs_log = new G4LogicalVolume(platePcbs_box,
-									   sideframe2Material, "platePcbs_log", 0, 0, 0);
-	G4double pcbsPos_x = sddPos_x;
-	G4double pcbsPos_y = sddPos_y;
-	G4double pcbsPos_z = -(sdd_thick + pcbs_thick)/2.; 
-	platePcbs_phys = new G4PVPlacement(0,
-									  G4ThreeVector(pcbsPos_x, pcbsPos_y, pcbsPos_z),
-									  platePcbs_log,
-									  "platePcbs_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double pcbs_x = sdd_x;
-	G4double pcbs_y = sdd_y;
-	G4Box* pcbs_box = new G4Box("pcbs_box", 
-								  pcbs_x/2., pcbs_y/2., pcbs_thick/2.);
-	// Logical
-	pcbs_log = new G4LogicalVolume(pcbs_box,
-													 pcbsMaterial, "pcbs_log", 0, 0, 0);
-	// Physical
-	pcbsParam = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-
-	pcbs_phys = new G4PVParameterised("pcbs_phys",       	// their name
-									 pcbs_log,    	        // their logical volume
-									 platePcbs_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 pcbsParam);   			// The parametrisation
+                                        moduleframeMaterial, "platePcbs_log", 0, 0, 0);
+	G4double pcbs_loc_z = -(sdd_thick/2. + pcbs_thick/2.);
+    
+    platePcbs00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),pcbs_loc_z),
+                                         platePcbs_log,
+                                         "platePcbs00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    platePcbs01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),pcbs_loc_z),
+                                         platePcbs_log,
+                                         "platePcbs01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
 
-	// . PCB 1st layer
-	G4double platePcb1_x = plate_x;
-	G4double platePcb1_y = plate_y;
-	G4double platePcb1_z = pcb1_thick;
+    // Solid
+    G4Box* pcbs_box = new G4Box("pcbs_box",
+                                sdd_x/2., sdd_y/2., pcbs_thick/2.);
+    // Logical
+    pcbs_log = new G4LogicalVolume(pcbs_box,
+                                   pcbsMaterial, "pcbs_log", 0, 0, 0);
+    // Physical
+    pcbsParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    pcbs_phys = new G4PVParameterised("pcbs_phys",               // their name
+                                      pcbs_log,                // their logical volume
+                                      platePcbs_log,          // Mother logical volume
+                                      kYAxis,                  // Are placed along this axis
+                                      16,            // Number of chambers
+                                      pcbsParam);           // The parametrisation
 
-	G4Box* platePcb1_box = new G4Box("platePcb1_box",
-									platePcb1_x/2., platePcb1_y/2., platePcb1_z/2.);
 
-	platePcb1_log = new G4LogicalVolume(platePcb1_box,
-									   sideframe2Material, "platePcb1_log", 0, 0, 0);
-	G4double pcb1Pos_x = sddPos_x;
-	G4double pcb1Pos_y = sddPos_y;
-	G4double pcb1Pos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick/2.); 
-	platePcb1_phys = new G4PVPlacement(0,
-									  G4ThreeVector(pcb1Pos_x, pcb1Pos_y, pcb1Pos_z),
-									  platePcb1_log,
-									  "platePcb1_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
+	// 9. PCB 1st layer (A)
+	G4double platePcbA_x = moduleframe_side_x;
+	G4double platePcbA_y = moduleframe_side_y;
+	G4double platePcbA_z = pcbA_thick;
 
-	// Solid
-	G4double pcb1_x = sdd_x;
-	G4double pcb1_y = sdd_y;
-	G4Box* pcb1_box = new G4Box("pcb1_box", 
-								  pcb1_x/2., pcb1_y/2., pcb1_thick/2.);
-	// Logical
-	pcb1_log = new G4LogicalVolume(pcb1_box,
-													 pcb1Material, "pcb1_log", 0, 0, 0);
-	// Physical
-	pcb1Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-  
-	pcb1_phys = new G4PVParameterised("pcb1_phys",       	// their name
-									 pcb1_log,    	        // their logical volume
-									 platePcb1_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 pcb1Param);   			// The parametrisation
+	G4Box* platePcbA_box = new G4Box("platePcbA_box",
+									platePcbA_x/2., platePcbA_y/2., platePcbA_z/2.);
 
-	// . PCB 2nd layer
-	G4double platePcb2_x = plate_x;
-	G4double platePcb2_y = plate_y;
-	G4double platePcb2_z = pcb2_thick;
+	platePcbA_log = new G4LogicalVolume(platePcbA_box,
+									   moduleframeMaterial, "platePcbA_log", 0, 0, 0);
 
-	G4Box* platePcb2_box = new G4Box("platePcb2_box",
-									platePcb2_x/2., platePcb2_y/2., platePcb2_z/2.);
+    G4double pcbA_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick/2.);
+    platePcbA00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),pcbA_loc_z),
+                                         platePcbA_log,
+                                         "platePcbA00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
-	platePcb2_log = new G4LogicalVolume(platePcb2_box,
-									   sideframe2Material, "platePcb2_log", 0, 0, 0);
-	G4double pcb2Pos_x = sddPos_x;
-	G4double pcb2Pos_y = sddPos_y;
-	G4double pcb2Pos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick + pcb2_thick/2.); 
-	platePcb2_phys = new G4PVPlacement(0,
-									  G4ThreeVector(pcb2Pos_x, pcb2Pos_y, pcb2Pos_z),
-									  platePcb2_log,
-									  "platePcb2_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
+    platePcbA01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),pcbA_loc_z),
+                                         platePcbA_log,
+                                         "platePcbA01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
-	// Solid
-	G4double pcb2_x = sdd_x;
-	G4double pcb2_y = sdd_y;
-	G4Box* pcb2_box = new G4Box("pcb2_box", 
-								  pcb2_x/2., pcb2_y/2., pcb2_thick/2.);
-	// Logical
-	pcb2_log = new G4LogicalVolume(pcb2_box,
-													 pcb2Material, "pcb2_log", 0, 0, 0);
-	// Physical
-	pcb2Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-  
-	pcb2_phys = new G4PVParameterised("pcb2_phys",       	// their name
-									 pcb2_log,    	        // their logical volume
-									 platePcb2_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 pcb2Param);   			// The parametrisation
+    // Solid
+    G4Box* pcbA_box = new G4Box("pcbA_box",
+                                sdd_x/2., sdd_y/2., pcbA_thick/2.);
+    // Logical
+    pcbA_log = new G4LogicalVolume(pcbA_box,
+                                   pcbAMaterial, "pcbA_log", 0, 0, 0);
+    // Physical
+    pcbAParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    pcbA_phys = new G4PVParameterised("pcbA_phys",               // their name
+                                      pcbA_log,                // their logical volume
+                                      platePcbA_log,          // Mother logical volume
+                                      kYAxis,                  // Are placed along this axis
+                                      16,            // Number of chambers
+                                      pcbAParam);           // The parametrisation
 
-	// . PCB 3rd layer
-	G4double platePcb3_x = plate_x;
-	G4double platePcb3_y = plate_y;
-	G4double platePcb3_z = pcb3_thick;
+	// 10. PCB 2nd layer (B)
+    G4double platePcbB_x = moduleframe_side_x;
+    G4double platePcbB_y = moduleframe_side_y;
+    G4double platePcbB_z = pcbB_thick;
+    
+    G4Box* platePcbB_box = new G4Box("platePcbB_box",
+                                     platePcbB_x/2., platePcbB_y/2., platePcbB_z/2.);
+    
+    platePcbB_log = new G4LogicalVolume(platePcbB_box,
+                                        moduleframeMaterial, "platePcbB_log", 0, 0, 0);
+    
+    G4double pcbB_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick/2.);
+    platePcbB00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),pcbB_loc_z),
+                                         platePcbB_log,
+                                         "platePcbB00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    platePcbB01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),pcbB_loc_z),
+                                         platePcbB_log,
+                                         "platePcbB01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
-	G4Box* platePcb3_box = new G4Box("platePcb3_box",
-									platePcb3_x/2., platePcb3_y/2., platePcb3_z/2.);
+    
+    // Solid
+    G4Box* pcbB_box = new G4Box("pcbB_box",
+                                sdd_x/2., sdd_y/2., pcbB_thick/2.);
+    // Logical
+    pcbB_log = new G4LogicalVolume(pcbB_box,
+                                   pcbBMaterial, "pcbB_log", 0, 0, 0);
+    // Physical
+    pcbBParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    pcbB_phys = new G4PVParameterised("pcbB_phys",               // their name
+                                      pcbB_log,                // their logical volume
+                                      platePcbB_log,          // Mother logical volume
+                                      kYAxis,                  // Are placed along this axis
+                                      16,            // Number of chambers
+                                      pcbBParam);           // The parametrisation
 
-	platePcb3_log = new G4LogicalVolume(platePcb3_box,
-									   sideframe2Material, "platePcb3_log", 0, 0, 0);
-	G4double pcb3Pos_x = sddPos_x;
-	G4double pcb3Pos_y = sddPos_y;
-	G4double pcb3Pos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick/2.);
-	platePcb3_phys = new G4PVPlacement(0,
-									  G4ThreeVector(pcb3Pos_x, pcb3Pos_y, pcb3Pos_z),
-									  platePcb3_log,
-									  "platePcb3_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
+	// 11. PCB 3rd layer (C)
+    G4double platePcbC_x = moduleframe_side_x;
+    G4double platePcbC_y = moduleframe_side_y;
+    G4double platePcbC_z = pcbC_thick;
+    
+    G4Box* platePcbC_box = new G4Box("platePcbC_box",
+                                     platePcbC_x/2., platePcbC_y/2., platePcbC_z/2.);
+    
+    platePcbC_log = new G4LogicalVolume(platePcbC_box,
+                                        moduleframeMaterial, "platePcbC_log", 0, 0, 0);
+    
+    G4double pcbC_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick/2.);
+    platePcbC00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),pcbC_loc_z),
+                                         platePcbC_log,
+                                         "platePcbC00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    platePcbC01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),pcbC_loc_z),
+                                         platePcbC_log,
+                                         "platePcbC01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
-	// Solid
-	G4double pcb3_x = sdd_x;
-	G4double pcb3_y = sdd_y;
-	G4Box* pcb3_box = new G4Box("pcb3_box", 
-								  pcb3_x/2., pcb3_y/2., pcb3_thick/2.);
-	// Logical
-	pcb3_log = new G4LogicalVolume(pcb3_box,
-													 pcb3Material, "pcb3_log", 0, 0, 0);
-	// Physical
-	pcb3Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-  
-	pcb3_phys = new G4PVParameterised("pcb3_phys",       	// their name
-									 pcb3_log,    	        // their logical volume
-									 platePcb3_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 pcb3Param);   			// The parametrisation
+    
+    // Solid
+    G4Box* pcbC_box = new G4Box("pcbC_box",
+                                sdd_x/2., sdd_y/2., pcbC_thick/2.);
+    // Logical
+    pcbC_log = new G4LogicalVolume(pcbC_box,
+                                   pcbCMaterial, "pcbC_log", 0, 0, 0);
+    // Physical
+    pcbCParam = new SDDParameterisation(sdd_x, sdd_y, (sdd_x+spacing_sdd_x), (sdd_y+spacing_sdd_y));
+    
+    pcbC_phys = new G4PVParameterised("pcbC_phys",               // their name
+                                      pcbC_log,                // their logical volume
+                                      platePcbC_log,          // Mother logical volume
+                                      kYAxis,                  // Are placed along this axis
+                                      16,            // Number of chambers
+                                      pcbCParam);           // The parametrisation
+
 	
-	
-	// . Radiator
-	G4double plateBack1_x = plate_x;
-	G4double plateBack1_y = plate_y;
-	G4double plateBack1_z = back1_thick;
-	
-	G4Box* plateBack1_box = new G4Box("plateBack1_box",
-									plateBack1_x/2., plateBack1_y/2., plateBack1_z/2.);
-	
-	plateBack1_log = new G4LogicalVolume(plateBack1_box,
-									   sideframe2Material, "plateBack1_log", 0, 0, 0);
-	G4double back1Pos_x = sddPos_x;
-	G4double back1Pos_y = sddPos_y;
-	G4double back1Pos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick + back1_thick/2.); 
-	plateBack1_phys = new G4PVPlacement(0,
-									  G4ThreeVector(back1Pos_x, back1Pos_y, back1Pos_z),
-									  plateBack1_log,
-									  "plateBack1_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
+	// 12. Backshield A
+    G4double backshieldA_x = moduleframe_side_x;
+    G4double backshieldA_y = moduleframe_side_y;
+    G4double backshieldA_z = backshieldA_thick;
+    
+    G4Box* backshieldA_box = new G4Box("backshieldA_box",
+                                     backshieldA_x/2., backshieldA_y/2., backshieldA_z/2.);
+    
+    backshieldA_log = new G4LogicalVolume(backshieldA_box,
+                                        backshieldAMaterial, "backshieldA_log", 0, 0, 0);
+    G4double backshieldA_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick/2.);
+    
+    backshieldA00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),backshieldA_loc_z),
+                                         backshieldA_log,
+                                         "backshieldA00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    backshieldA01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),backshieldA_loc_z),
+                                         backshieldA_log,
+                                         "backshieldA01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
 
-	// Solid
-	G4double back1_x = sdd_x;
-	G4double back1_y = sdd_y;
-	G4Box* back1_box = new G4Box("back1_box", 
-								  back1_x/2., back1_y/2., back1_thick/2.);
-	// Logical
-	back1_log = new G4LogicalVolume(back1_box,
-													 back1Material, "back1_log", 0, 0, 0);
-	// Physical
-	back1Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	
-	back1_phys = new G4PVParameterised("back1_phys",       	// their name
-									 back1_log,    	        // their logical volume
-									 plateBack1_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 back1Param);   		// The parametrisation
-								
-	// . Backshielding
-	G4double plateBack2_x = plate_x;
-	G4double plateBack2_y = plate_y;
-	G4double plateBack2_z = back2_thick;
-	
-	G4Box* plateBack2_box = new G4Box("plateBack2_box",
-									plateBack2_x/2., plateBack2_y/2., plateBack2_z/2.);
-	
-	plateBack2_log = new G4LogicalVolume(plateBack2_box,
-									   sideframe2Material, "plateBack2_log", 0, 0, 0);
-	G4double back2Pos_x = sddPos_x;
-	G4double back2Pos_y = sddPos_y;
-	G4double back2Pos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick + back1_thick + back2_thick/2.); 
-	plateBack2_phys = new G4PVPlacement(0,
-									  G4ThreeVector(back2Pos_x, back2Pos_y, back2Pos_z),
-									  plateBack2_log,
-									  "plateBack2_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double back2_x = sdd_x;
-	G4double back2_y = sdd_y;
-	G4Box* back2_box = new G4Box("back2_box", 
-								  back2_x/2., back2_y/2., back2_thick/2.);
-	// Logical
-	back2_log = new G4LogicalVolume(back2_box,
-													 back2Material, "back2_log", 0, 0, 0);
-	// Physical
-	back2Param = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	
-	back2_phys = new G4PVParameterised("back2_phys",       	// their name
-									 back2_log,    	        // their logical volume
-									 plateBack2_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 back2Param);   		// The parametrisation
-								
-	// . Backside Frame
-	G4double plateFrame_x = plate_x;
-	G4double plateFrame_y = plate_y;
-	G4double plateFrame_z = frame_thick;
-	
-	G4Box* plateFrame_box = new G4Box("plateFrame_box",
-									plateFrame_x/2., plateFrame_y/2., plateFrame_z/2.);
-	
-	plateFrame_log = new G4LogicalVolume(plateFrame_box,
-									   defaultMaterial, "plateFrame_log", 0, 0, 0);
-	G4double framePos_x = sddPos_x;
-	G4double framePos_y = sddPos_y;
-	G4double framePos_z = -(sdd_thick/2. + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick + back1_thick + back2_thick + frame_thick/2.); 
-	plateFrame_phys = new G4PVPlacement(0,
-									  G4ThreeVector(framePos_x, framePos_y, framePos_z),
-									  plateFrame_log,
-									  "plateFrame_phys",
-									  experimentalHall_log,
-									  false,
-									  0);
-
-	// Solid
-	G4double frame_x = sdd_x;
-	G4double frame_y = sdd_y;
-	G4Box* frame_box = new G4Box("frame_box", 
-								  frame_x/2., frame_y/2., frame_thick/2.);
-	// Logical
-	frame_log = new G4LogicalVolume(frame_box,
-													 frameMaterial, "frame_log", 0, 0, 0);
-	// Physical
-	frameParam = new ModuleParameterisation(moduleSpacing_x, moduleSpacing_y, moduleArray_x, moduleArray_y);
-	
-	frame_phys = new G4PVParameterised("frame_phys",       	// their name
-									 frame_log,    	        // their logical volume
-									 plateFrame_log,  		// Mother logical volume
-									 kYAxis,          		// Are placed along this axis 
-									 nModules,    		// Number of chambers
-									 frameParam);   		// The parametrisation
-
-
-
-	// . Side frame 1
-	G4double sideframe_thick =  coll_thick + coating_thick + deadlayer1_thick + deadlayer2_thick + deadlayer3_thick + sdd_thick + pcbs_thick + pcb1_thick + pcb2_thick + pcb3_thick + back1_thick + back2_thick + frame_thick;
-	
-	G4double sideframe1_Ext_x     = 2*sideframe1_width + 2*sideframe2_width + plate_x;
-	G4double sideframe1_Ext_y     = 2*sideframe1_width + 2*sideframe2_width + plate_y;
-	G4double sideframe1_Int_x     = 2*sideframe2_width + plate_x;
-	G4double sideframe1_Int_y     = 2*sideframe2_width + plate_y;
-	
-	G4VSolid* sideframe1_Externalbox = new G4Box("sideframe1_Externalbox", 
-									  			sideframe1_Ext_x/2., sideframe1_Ext_y/2., sideframe_thick/2.);
-	G4VSolid* sideframe1_Internalbox = new G4Box("sideframe1_Internalbox", 
-									  			sideframe1_Int_x/2., sideframe1_Int_y/2., sideframe_thick/2.);
-									
-	G4VSolid* sideframe1_booleansolid = new G4SubtractionSolid("sideframe1_booleansolid", 
-											sideframe1_Externalbox, sideframe1_Internalbox, 0, G4ThreeVector(0,0.,0.));
-
-	// Logical
-	sideframe1_log = new G4LogicalVolume(sideframe1_booleansolid,
-	                           			 sideframe1Material, "sideframe1_log", 0, 0, 0);
-	// Physical
-	G4double sideframe1Pos_x = 0.*cm;
-	G4double sideframe1Pos_y = 0.*cm;
-	G4double sideframe1Pos_z = 0.*cm; 
-	sideframe1_phys = new G4PVPlacement(0,
-										 G4ThreeVector(sideframe1Pos_x, sideframe1Pos_y, sideframe1Pos_z),
-										 sideframe1_log,
-										 "sideframe1_phys", 
-										 experimentalHall_log, 
-										 false, 
-										 0);
-
-	G4double sideframe2_Ext_x     = 2*sideframe2_width + plate_x;
-	G4double sideframe2_Ext_y     = 2*sideframe2_width + plate_y;
-	G4double sideframe2_Int_x     = plate_x;
-	G4double sideframe2_Int_y     = plate_y;
-	
-	G4VSolid* sideframe2_Externalbox = new G4Box("sideframe2_Externalbox", 
-									  			sideframe2_Ext_x/2., sideframe2_Ext_y/2., sideframe_thick/2.);
-	G4VSolid* sideframe2_Internalbox = new G4Box("sideframe2_Internalbox", 
-									  			sideframe2_Int_x/2., sideframe2_Int_y/2., sideframe_thick/2.);
-									
-	G4VSolid* sideframe2_booleansolid = new G4SubtractionSolid("sideframe2_booleansolid", 
-											sideframe2_Externalbox, sideframe2_Internalbox, 0, G4ThreeVector(0,0.,0.));
-
-	// Logical
-	sideframe2_log = new G4LogicalVolume(sideframe2_booleansolid,
-	                           			 sideframe2Material, "sideframe2_log", 0, 0, 0);
-	// Physical
-	G4double sideframe2Pos_x = 0.*cm;
-	G4double sideframe2Pos_y = 0.*cm;
-	G4double sideframe2Pos_z = 0.*cm; 
-	sideframe2_phys = new G4PVPlacement(0,
-										 G4ThreeVector(sideframe2Pos_x, sideframe2Pos_y, sideframe2Pos_z),
-										 sideframe2_log,
-										 "sideframe2_phys", 
-										 experimentalHall_log, 
-										 false, 
-										 0);
-
-
-
+    // 13. Backshield B
+    G4double backshieldB_x = moduleframe_side_x;
+    G4double backshieldB_y = moduleframe_side_y;
+    G4double backshieldB_z = backshieldB_thick;
+    
+    G4Box* backshieldB_box = new G4Box("backshieldB_box",
+                                       backshieldB_x/2., backshieldB_y/2., backshieldB_z/2.);
+    
+    backshieldB_log = new G4LogicalVolume(backshieldB_box,
+                                          backshieldBMaterial, "backshieldB_log", 0, 0, 0);
+    G4double backshieldB_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick/2.);
+    
+    backshieldB00_phys = new G4PVPlacement(moduleRotation(0),
+                                           G4ThreeVector(moduleLocation(0).x(), moduleLocation(0).y(),backshieldB_loc_z),
+                                           backshieldB_log,
+                                           "backshieldB00_phys",
+                                           experimentalHall_log,
+                                           false,
+                                           0);
+    backshieldB01_phys = new G4PVPlacement(moduleRotation(1),
+                                           G4ThreeVector(moduleLocation(1).x(), moduleLocation(1).y(),backshieldB_loc_z),
+                                           backshieldB_log,
+                                           "backshieldB01_phys",
+                                           experimentalHall_log,
+                                           false,
+                                           0);
 
 
     
-    // 10. SATELLITE BUS
+    
+    
+    
+    // 14. SATELLITE BUS
 
 	if (flag_satellitebus == true) {
 		// a. Optical bench
@@ -1437,20 +1344,20 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         G4RotationMatrix* solarpanelRot = new G4RotationMatrix;
         solarpanelRot->rotateX(90*deg);
         
-        solarpanel1_phys = new G4PVPlacement(solarpanelRot,
+        solarpanelA_phys = new G4PVPlacement(solarpanelRot,
                                           G4ThreeVector(solarpanelPos_x, solarpanelPos_y, solarpanelPos_z),
                                           solarpanel_log,
-                                          "solarpanel1_phys",
+                                          "solarpanelA_phys",
                                           experimentalHall_log,
                                           false,
                                           0);
 
         // Physical 2
         solarpanelPos_x = bus_distance -tower_diameter/2 - solarpanelGap - solarpanel_side_x/2.;
-        solarpanel2_phys = new G4PVPlacement(solarpanelRot,
+        solarpanelB_phys = new G4PVPlacement(solarpanelRot,
                                           G4ThreeVector(solarpanelPos_x, solarpanelPos_y, solarpanelPos_z),
                                           solarpanel_log,
-                                          "solarpanel2_phys",
+                                          "solarpanelB_phys",
                                           experimentalHall_log,
                                           false,
                                           0);
@@ -1503,11 +1410,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
 
 	}
-	else if (flag_satellitebus == false)
-	{
-        //...
-    }
-
 
 
 
@@ -1525,64 +1427,49 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	experimentalHall_log -> SetVisAttributes(G4VisAttributes::Invisible);  
 
 	G4VisAttributes* SDDVisAtt= new G4VisAttributes(yellow);
-//    sdd_log -> SetVisAttributes(SDDVisAtt);
-    sdd_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    sdd_log -> SetVisAttributes(SDDVisAtt);
     
-//    plateSdd_log        -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateColl_log       -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateCoating_log    -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateDeadlayer1_log -> SetVisAttributes(G4VisAttributes::Invisible);  
-	plateDeadlayer2_log -> SetVisAttributes(G4VisAttributes::Invisible);  
-	plateDeadlayer3_log -> SetVisAttributes(G4VisAttributes::Invisible);  
-	platePcb1_log       -> SetVisAttributes(G4VisAttributes::Invisible);
-	platePcb2_log       -> SetVisAttributes(G4VisAttributes::Invisible);
-	platePcb3_log       -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateBack1_log      -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateBack2_log      -> SetVisAttributes(G4VisAttributes::Invisible);
-	plateFrame_log      -> SetVisAttributes(G4VisAttributes::Invisible);
+    plateSdd_log        -> SetVisAttributes(white);
+    plateColl_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    plateDeadlayerA_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    plateDeadlayerB_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    plateDeadlayerC_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    platePcbA_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    platePcbB_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    platePcbC_log       -> SetVisAttributes(G4VisAttributes::Invisible);
 
 
 	G4VisAttributes* CollimatorVisAtt= new G4VisAttributes(blue);
-//    coll_log  -> SetVisAttributes(CollimatorVisAtt);
-    coll_log       -> SetVisAttributes(G4VisAttributes::Invisible);
+    coll_log  -> SetVisAttributes(CollimatorVisAtt);
 
     G4VisAttributes* ThermalBlanketVisAtt = new G4VisAttributes(magenta);
-	thermalblanket1_log -> SetVisAttributes(ThermalBlanketVisAtt);  
-	thermalblanket2_log -> SetVisAttributes(ThermalBlanketVisAtt);  
+    thermalblanketA_log -> SetVisAttributes(ThermalBlanketVisAtt);
+    thermalblanketB_log -> SetVisAttributes(ThermalBlanketVisAtt);
 	
-	G4VisAttributes* CoatingVisAtt= new G4VisAttributes(red);
-	coating_log -> SetVisAttributes(CoatingVisAtt);
 	
-	deadlayer1_log -> SetVisAttributes(G4VisAttributes::Invisible);  
-	deadlayer2_log -> SetVisAttributes(G4VisAttributes::Invisible);  
-	deadlayer3_log -> SetVisAttributes(G4VisAttributes::Invisible);  
+    deadlayerA_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    deadlayerB_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    deadlayerC_log -> SetVisAttributes(G4VisAttributes::Invisible);
+    
+    pcbs_log -> SetVisAttributes(G4VisAttributes::Invisible);
 	
-	pcbs_log -> SetVisAttributes(G4VisAttributes::Invisible);
+	G4VisAttributes* PCBAVisAtt= new G4VisAttributes(green);
+    pcbA_log -> SetVisAttributes(PCBAVisAtt);
 	
-	G4VisAttributes* PCB1VisAtt= new G4VisAttributes(green);
-	pcb1_log -> SetVisAttributes(PCB1VisAtt);
+	G4VisAttributes* PCBBVisAtt= new G4VisAttributes(red);
+    pcbB_log -> SetVisAttributes(PCBBVisAtt);
 	
-	G4VisAttributes* PCB2VisAtt= new G4VisAttributes(red);
-	pcb2_log -> SetVisAttributes(PCB2VisAtt);
+	G4VisAttributes* PCBCVisAtt= new G4VisAttributes(green);
+    pcbC_log -> SetVisAttributes(PCBCVisAtt);
 	
-	G4VisAttributes* PCB3VisAtt= new G4VisAttributes(green);
-	pcb3_log -> SetVisAttributes(PCB3VisAtt);
+	G4VisAttributes* BackshieldAVisAtt= new G4VisAttributes(magenta);
+    backshieldA_log -> SetVisAttributes(BackshieldAVisAtt);
 	
-	G4VisAttributes* Back1VisAtt= new G4VisAttributes(magenta);
-	back1_log -> SetVisAttributes(Back1VisAtt);
+	G4VisAttributes* BackshieldBVisAtt= new G4VisAttributes(green);
+    backshieldB_log -> SetVisAttributes(BackshieldBVisAtt);
 	
-	G4VisAttributes* Back2VisAtt= new G4VisAttributes(green);
-	back2_log -> SetVisAttributes(Back2VisAtt);
-	
-	G4VisAttributes* FrameVisAtt= new G4VisAttributes(cyan);
-	frame_log -> SetVisAttributes(FrameVisAtt);
 
-	G4VisAttributes* Sideframe1VisAtt= new G4VisAttributes(cyan);
-	sideframe1_log -> SetVisAttributes(Sideframe1VisAtt);
-
-	G4VisAttributes* Sideframe2VisAtt= new G4VisAttributes(red);
-	sideframe2_log -> SetVisAttributes(Sideframe2VisAtt);
-
+    
 	if (flag_satellitebus == true) 
 	{
 		G4VisAttributes* OpticalbenchVisAtt= new G4VisAttributes(magenta);
@@ -1626,24 +1513,16 @@ void DetectorConstruction::ConstructSDandField()
     auto sdman = G4SDManager::GetSDMpointer(); // Mandatory since Geant v. 4.10.03
 
     // Pixelization for the readout with 0.97 mm x 35 mm size
-    // *** NOTE: Put the pixel values as parameters?
-    G4double pixelsizeX = 0.97*mm;
-    G4double pixelsizeY = 35.0*mm;
-    G4int sddXsectors  = sdd_x/pixelsizeX;
-    G4int sddYsectors  = sdd_y/pixelsizeY;
-        
-    G4int totalXpixels = sddXsectors*moduleArray_x;
-    G4int totalYpixels = sddYsectors*moduleArray_y;
+    G4int total_addresses = pixel_x*pixel_y*n_sdd_per_module*n_modules;
+    G4cout << "Total allocated addresses "<< total_addresses << G4endl;
+    SensitiveDetector* sdd_SD = new SensitiveDetector("SDD", total_addresses,
+                                                      sdd_x/pixel_x, sdd_y/pixel_y,
+                                                      pixel_x, pixel_y,
+                                                      n_sdd_per_module, n_modules);
     
-    G4cout << "*** DEBUG: totalXpixels " << totalXpixels << " totalYpixels " << totalYpixels << G4endl;
-    G4cout << "*** DEBUG: totalXpixels*totalYpixels " << totalXpixels*totalYpixels << G4endl;
-        
-    SensitiveDetector* sdd_SD = new SensitiveDetector("SDD", totalXpixels, totalYpixels);
-    
+
     sdman->AddNewDetector(sdd_SD); // Mandatory since Geant v. 4.10.03
     SetSensitiveDetector(sdd_log, sdd_SD);
-    
-    
 }
 
 
@@ -1654,55 +1533,42 @@ void DetectorConstruction::SetSDDMaterial(G4String materialChoice)
 	if (pttoMaterial) sddMaterial = pttoMaterial;
 }
 
-
 void DetectorConstruction::SetCollMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
 	if (pttoMaterial) collMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetThermalblanket1Material(G4String materialChoice)
+void DetectorConstruction::SetThermalblanketAMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) thermalblanket1Material = pttoMaterial;
+	if (pttoMaterial) thermalblanketAMaterial = pttoMaterial;
+}
+
+void DetectorConstruction::SetThermalblanketBMaterial(G4String materialChoice)
+{
+	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
+	if (pttoMaterial) thermalblanketBMaterial = pttoMaterial;
 }
 
 
-void DetectorConstruction::SetThermalblanket2Material(G4String materialChoice)
+void DetectorConstruction::SetDeadlayerAMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) thermalblanket2Material = pttoMaterial;
+	if (pttoMaterial) deadlayerAMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetCoatingMaterial(G4String materialChoice)
+void DetectorConstruction::SetDeadlayerBMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) coatingMaterial = pttoMaterial;
+	if (pttoMaterial) deadlayerBMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetDeadlayer1Material(G4String materialChoice)
+void DetectorConstruction::SetDeadlayerCMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) deadlayer1Material = pttoMaterial;
+	if (pttoMaterial) deadlayerCMaterial = pttoMaterial;
 }
-
-
-void DetectorConstruction::SetDeadlayer2Material(G4String materialChoice)
-{
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) deadlayer2Material = pttoMaterial;
-}
-
-
-void DetectorConstruction::SetDeadlayer3Material(G4String materialChoice)
-{
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) deadlayer3Material = pttoMaterial;
-}
-
 
 void DetectorConstruction::SetPcbsMaterial(G4String materialChoice)
 {
@@ -1710,56 +1576,40 @@ void DetectorConstruction::SetPcbsMaterial(G4String materialChoice)
 	if (pttoMaterial) pcbsMaterial = pttoMaterial;
 }
 
-void DetectorConstruction::SetPcb1Material(G4String materialChoice)
+void DetectorConstruction::SetPcbAMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) pcb1Material = pttoMaterial;
+	if (pttoMaterial) pcbAMaterial = pttoMaterial;
 }
 
-void DetectorConstruction::SetPcb2Material(G4String materialChoice)
+void DetectorConstruction::SetPcbBMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) pcb2Material = pttoMaterial;
+	if (pttoMaterial) pcbBMaterial = pttoMaterial;
 }
 
-void DetectorConstruction::SetPcb3Material(G4String materialChoice)
+void DetectorConstruction::SetPcbCMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) pcb3Material = pttoMaterial;
+	if (pttoMaterial) pcbCMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetBack1Material(G4String materialChoice)
+void DetectorConstruction::SetBackshieldAMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) back1Material = pttoMaterial;
+	if (pttoMaterial) backshieldAMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetBack2Material(G4String materialChoice)
+void DetectorConstruction::SetBackshieldBMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) back2Material = pttoMaterial;
+	if (pttoMaterial) backshieldBMaterial = pttoMaterial;
 }
 
-
-void DetectorConstruction::SetFrameMaterial(G4String materialChoice)
+void DetectorConstruction::SetModuleframeMaterial(G4String materialChoice)
 {
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) frameMaterial = pttoMaterial;
-}
-
-
-void DetectorConstruction::SetSideframe1Material(G4String materialChoice)
-{
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) sideframe1Material = pttoMaterial;
-}
-
-void DetectorConstruction::SetSideframe2Material(G4String materialChoice)
-{
-	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
-	if (pttoMaterial) sideframe2Material = pttoMaterial;
+    G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
+    if (pttoMaterial) moduleframeMaterial = pttoMaterial;
 }
 
 void DetectorConstruction::SetOpticalbenchMaterial(G4String materialChoice)
@@ -1768,13 +1618,11 @@ void DetectorConstruction::SetOpticalbenchMaterial(G4String materialChoice)
 	if (pttoMaterial) opticalbenchMaterial = pttoMaterial;
 }
 
-
 void DetectorConstruction::SetTowerMaterial(G4String materialChoice)
 {
 	G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);     
 	if (pttoMaterial) towerMaterial = pttoMaterial;
 }
-
 
 void DetectorConstruction::SetServicemoduleMaterial(G4String materialChoice)
 {
@@ -1782,20 +1630,17 @@ void DetectorConstruction::SetServicemoduleMaterial(G4String materialChoice)
 	if (pttoMaterial) servicemoduleMaterial = pttoMaterial;
 }
 
-
 void DetectorConstruction::SetSolarPanelMaterial(G4String materialChoice)
 {
     G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
     if (pttoMaterial) solarpanelMaterial = pttoMaterial;
 }
 
-
 void DetectorConstruction::SetOpticalBenchCoverMaterial(G4String materialChoice)
 {
     G4Material* pttoMaterial = G4Material::GetMaterial(materialChoice);
     if (pttoMaterial) opticalbenchcoverMaterial = pttoMaterial;
 }
-
 
 void DetectorConstruction::SetSunshadeMaterial(G4String materialChoice)
 {
@@ -1806,7 +1651,7 @@ void DetectorConstruction::SetSunshadeMaterial(G4String materialChoice)
 
 
 
-
+// TODO: update
 void DetectorConstruction::PrintParameters()
 {
 	G4cout  << "\n-----------------------------------------------------------------------------------\n"
@@ -1817,36 +1662,28 @@ void DetectorConstruction::PrintParameters()
 			<< "\n SDD material                        : " 	<< sddMaterial -> GetName() 
 			<< "\n Collimator Thickness           (mm) : " 	<< coll_thick/mm
 			<< "\n Collimator material                 : " 	<< collMaterial -> GetName() 
-			<< "\n Thermal blanket 1 Thickness    (um) : " 	<< thermalblanket1_thick/um
-			<< "\n Thermal blanket 1 material          : " 	<< thermalblanket1Material -> GetName()
-			<< "\n Thermal blanket 2 Thickness    (um) : " 	<< thermalblanket2_thick/um
-			<< "\n Thermal blanket 2 material          : " 	<< thermalblanket2Material -> GetName()
-			<< "\n Coating Thickness              (um) : " 	<< coating_thick/um
-			<< "\n Coating material                    : " 	<< coatingMaterial -> GetName()
-			<< "\n Dead layer 1 Thickness         (um) : " 	<< deadlayer1_thick/um
-			<< "\n Dead layer 1 material               : " 	<< deadlayer1Material -> GetName()
-			<< "\n Dead layer 2 Thickness         (um) : " 	<< deadlayer2_thick/um
-			<< "\n Dead layer 2 material               : " 	<< deadlayer2Material -> GetName()
-			<< "\n Dead layer 3 Thickness         (um) : " 	<< deadlayer3_thick/um
-			<< "\n Dead layer 3 material               : " 	<< deadlayer3Material -> GetName()
+			<< "\n Thermal blanket A Thickness    (um) : " 	<< thermalblanketA_thick/um
+			<< "\n Thermal blanket A material          : " 	<< thermalblanketAMaterial -> GetName()
+			<< "\n Thermal blanket B Thickness    (um) : " 	<< thermalblanketB_thick/um
+			<< "\n Thermal blanket B material          : " 	<< thermalblanketBMaterial -> GetName()
+			<< "\n Dead layer A Thickness         (um) : " 	<< deadlayerA_thick/um
+			<< "\n Dead layer A material               : " 	<< deadlayerAMaterial -> GetName()
+			<< "\n Dead layer B Thickness         (um) : " 	<< deadlayerB_thick/um
+			<< "\n Dead layer B material               : " 	<< deadlayerBMaterial -> GetName()
+			<< "\n Dead layer C Thickness         (um) : " 	<< deadlayerC_thick/um
+			<< "\n Dead layer C material               : " 	<< deadlayerCMaterial -> GetName()
 			<< "\n PCB shielding layer Thickness  (um) : " 	<< pcbs_thick/um
 			<< "\n PCB shielding layer material        : " 	<< pcbsMaterial -> GetName()
-			<< "\n PCB layer 1 Thickness          (mm) : " 	<< pcb1_thick/mm
-			<< "\n PCB layer 1 material                : " 	<< pcb1Material -> GetName()
-			<< "\n PCB layer 2 Thickness          (um) : " 	<< pcb2_thick/um
-			<< "\n PCB layer 2 material                : " 	<< pcb2Material -> GetName()
-			<< "\n PCB layer 3 Thickness          (mm) : " 	<< pcb3_thick/mm
-			<< "\n PCB layer 3 material                : " 	<< pcb3Material -> GetName()
-			<< "\n Backshield 1 Thickness         (mm) : " 	<< back1_thick/mm
-			<< "\n Backshield 1 material               : " 	<< back1Material -> GetName()
-			<< "\n Backshield 2 Thickness         (mm) : " 	<< back2_thick/mm
-			<< "\n Backshield 2 material               : " 	<< back2Material -> GetName()
-			<< "\n Frame Thickness                (cm) : " 	<< frame_thick/cm
-			<< "\n Frame material                      : " 	<< frameMaterial -> GetName()
-			<< "\n External Sideframe Width       (mm) : " 	<< sideframe1_width/mm
-			<< "\n External Sideframe material         : " 	<< sideframe1Material -> GetName()
-			<< "\n Internal Sideframe Width       (mm) : " 	<< sideframe2_width/mm
-			<< "\n Internal Sideframe material         : " 	<< sideframe2Material -> GetName();
+			<< "\n PCB layer A Thickness          (mm) : " 	<< pcbA_thick/mm
+			<< "\n PCB layer A material                : " 	<< pcbAMaterial -> GetName()
+			<< "\n PCB layer B Thickness          (um) : " 	<< pcbB_thick/um
+			<< "\n PCB layer B material                : " 	<< pcbBMaterial -> GetName()
+			<< "\n PCB layer C Thickness          (mm) : " 	<< pcbC_thick/mm
+			<< "\n PCB layer C material                : " 	<< pcbCMaterial -> GetName()
+			<< "\n Backshield A Thickness         (mm) : " 	<< backshieldA_thick/mm
+			<< "\n Backshield A material               : " 	<< backshieldAMaterial -> GetName()
+			<< "\n Backshield B Thickness         (mm) : " 	<< backshieldB_thick/mm
+            << "\n Backshield B material               : " 	<< backshieldBMaterial -> GetName();
 	G4cout  << "\n";
 			if(flag_satellitebus == true) {
 				G4cout  << "\n Bus enabled."

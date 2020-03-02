@@ -10,8 +10,10 @@ G4ThreadLocal G4Allocator<DetectorHit>* DetectorHitAllocator = 0;
 // Default constructor
 DetectorHit::DetectorHit() 
 :	energyDeposit(0),
-	XpixelID(0),
-	YpixelID(0),
+	x_ID(0),
+    y_ID(0),
+    SDD_ID(0),
+    module_ID(0),
 	globaltime(0)
 {}		
 
@@ -20,10 +22,12 @@ DetectorHit::DetectorHit()
 // Alternate constructor
 DetectorHit::DetectorHit(G4int xp, G4int yp)
 :  	energyDeposit(0),
-	XpixelID(xp),
-	YpixelID(yp),
-	globaltime(0)
-{;}    
+    x_ID(xp),
+    y_ID(yp),
+    SDD_ID(0),
+    module_ID(0),
+    globaltime(0)
+{;}
 
 
 
@@ -35,8 +39,10 @@ DetectorHit::~DetectorHit() {}
 const DetectorHit& DetectorHit::operator=(const DetectorHit& right) {
 	// Assignment operator	
 	energyDeposit = right.energyDeposit;
-	XpixelID = right.XpixelID;
-	YpixelID = right.YpixelID;
+	x_ID = right.x_ID;
+	y_ID = right.y_ID;
+    SDD_ID = right.SDD_ID;
+    module_ID = right.module_ID;
 	globaltime = right.globaltime; 
 	return *this;
 }

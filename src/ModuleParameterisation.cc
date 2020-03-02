@@ -8,36 +8,37 @@
 #include "G4Box.hh"
 
 
-ModuleParameterisation::ModuleParameterisation(G4double moduleSpacing_x, G4double moduleSpacing_y,
-                                               G4int moduleArray_x, G4int moduleArray_y)
-{
-    fModuleSpacingX    =  moduleSpacing_x;
-    fModuleSpacingY    =  moduleSpacing_y;
-    fModuleArrayX  =  moduleArray_x;
-    fModuleArrayY  =  moduleArray_y;
-}
+ModuleParameterisation::ModuleParameterisation()
+{;}
 
 
 ModuleParameterisation::~ModuleParameterisation() 
 {;}
 
 
+
+
+
 void ModuleParameterisation::ComputeTransformation (const G4int copyNo, G4VPhysicalVolume* physVol) const
 { 
-    G4double xCell;
-    G4double yCell;
+    G4ThreeVector moduleLoc;
+    G4RotationMatrix* moduleRot = new G4RotationMatrix;
 
-    // Row and column corresponding to this copy (number copyNo)
-    G4int row    = copyNo / fModuleArrayX;  // integer division!
-    G4int column = copyNo % fModuleArrayX;  // modulo!
+    G4double xMod = 0*cm;
+    G4double yMod = (copyNo - 2)*100*cm;
+    G4double zMod = 0*cm;
+    
+    
+    if(copyNo == 1)
+    {
+        moduleRot->rotateX(90*deg);
+    }
 
-    //G4cout << "copyNo " << copyNo << " row " << row << " column " << column << G4endl;
+    
+    moduleLoc = G4ThreeVector(xMod, yMod, zMod);
 
-
-    xCell = column*fModuleSpacingX - (fModuleArrayX-1)*fModuleSpacingX/2.;
-    yCell = row*fModuleSpacingY    - (fModuleArrayY-1)*fModuleSpacingY/2.;
-
-    physVol->SetTranslation( G4ThreeVector(xCell, yCell, 0.) );
+    physVol->SetTranslation( moduleLoc );
+    physVol->SetRotation( moduleRot );
 }
 
 

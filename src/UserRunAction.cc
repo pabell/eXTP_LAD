@@ -52,6 +52,8 @@ void UserRunAction::BeginOfRunAction(const G4Run* run)
         analysisManager->CreateNtupleDColumn("En_dep");
         analysisManager->CreateNtupleDColumn("X_ID");
         analysisManager->CreateNtupleDColumn("Y_ID");
+        analysisManager->CreateNtupleDColumn("SDD_ID");
+        analysisManager->CreateNtupleDColumn("Module_ID");
         analysisManager->CreateNtupleDColumn("X_Primary");
         analysisManager->CreateNtupleDColumn("Y_Primary");
         analysisManager->CreateNtupleDColumn("Z_Primary");

@@ -25,14 +25,10 @@ class G4BREPSolidPolyhedra;
 class SDDParameterisation : public G4VPVParameterisation
 { 
     public:
-        SDDParameterisation(G4double moduleSpacing_x,
-                            G4double moduleSpacing_y,
-                            G4int moduleArray_x,
-                            G4int moduleArray_y,
-                            G4double pixelSpacing_x,
-                            G4double pixelSpacing_y,
-                            G4int pixelArray_x,
-                            G4int pixelArray_y);
+        SDDParameterisation(G4double sdd_x,
+                            G4double sdd_y,
+                            G4double sdd_spacing_x,
+                            G4double sdd_spacing_y);
 
         virtual	~SDDParameterisation();
 
@@ -55,14 +51,10 @@ class SDDParameterisation : public G4VPVParameterisation
         //    void ComputeDimensions (G4BREPSolidPolyhedra&,const G4int,const G4VPhysicalVolume*) const {}
 
     private:
-        G4double fModuleSpacingX;
-        G4double fModuleSpacingY;
-        G4int fModuleArrayX;
-        G4int fModuleArrayY;
-        G4double fPixelSpacingX;
-        G4double fPixelSpacingY;
-        G4int fPixelArrayX;
-        G4int fPixelArrayY;
+        G4double fSDDX;
+        G4double fSDDY;
+        G4double fSDDSpacingX;
+        G4double fSDDSpacingY;
 
 };
 

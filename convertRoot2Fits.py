@@ -21,8 +21,10 @@ tree_len = tree.GetEntries()
 
 t_ID = np.zeros(tree_len, dtype=np.int)
 t_ED = np.zeros(tree_len, dtype=np.float)
-t_XH = np.zeros(tree_len, dtype=np.float)
-t_YH = np.zeros(tree_len, dtype=np.float)
+t_XH = np.zeros(tree_len, dtype=np.int)
+t_YH = np.zeros(tree_len, dtype=np.int)
+t_SH = np.zeros(tree_len, dtype=np.int)
+t_MH = np.zeros(tree_len, dtype=np.int)
 t_XP = np.zeros(tree_len, dtype=np.float)
 t_YP = np.zeros(tree_len, dtype=np.float)
 t_ZP = np.zeros(tree_len, dtype=np.float)
@@ -37,6 +39,8 @@ for i, entry in enumerate(tree):
       t_ED[i] = entry.En_dep
       t_XH[i] = entry.X_ID
       t_YH[i] = entry.Y_ID
+      t_SH[i] = entry.SDD_ID
+      t_MH[i] = entry.Module_ID
       t_XP[i] = entry.X_Primary
       t_YP[i] = entry.Y_Primary
       t_ZP[i] = entry.Z_Primary
@@ -62,11 +66,17 @@ tbhdu = pyfits.BinTableHDU.from_columns([
                                                         unit='keV',
                                                         array=t_ED[sorting]), 
                                           pyfits.Column(name='X_ID', 
-                                                        format='1D',
+                                                        format='1K',
                                                         array=t_XH[sorting]),
                                           pyfits.Column(name='Y_ID', 
-                                                        format='1D',
+                                                        format='1K',
                                                         array=t_YH[sorting]),
+                                          pyfits.Column(name='SDD_ID', 
+                                                        format='1K',
+                                                        array=t_SH[sorting]),
+                                          pyfits.Column(name='Module_ID', 
+                                                        format='1K',
+                                                        array=t_MH[sorting]),
                                           pyfits.Column(name='X_Primary',
                                                         format='1D',
                                                         unit='cm',

@@ -4,6 +4,9 @@
 #include "globals.hh"
 #include "G4VPVParameterisation.hh"
 
+#include "G4ThreeVector.hh"
+#include "G4RotationMatrix.hh"
+
 class G4VPhysicalVolume;
 class G4Box;
 
@@ -25,12 +28,12 @@ class G4BREPSolidPolyhedra;
 class ModuleParameterisation : public G4VPVParameterisation
 { 
     public:
-        ModuleParameterisation(G4double moduleSpacing_x, G4double moduleSpacing_y,
-                               G4int moduleArray_x, G4int moduleArray_y);
+        ModuleParameterisation();
 
         virtual	~ModuleParameterisation();
 
         void ComputeTransformation (const G4int copyNo, G4VPhysicalVolume* physVol) const;
+
 
 
     private:  // Dummy declarations to get rid of warnings...
@@ -49,10 +52,6 @@ class ModuleParameterisation : public G4VPVParameterisation
         //    void ComputeDimensions (G4BREPSolidPolyhedra&,const G4int,const G4VPhysicalVolume*) const {}
 
     private:
-        G4double fModuleSpacingX;
-        G4double fModuleSpacingY;
-        G4int fModuleArrayX;
-        G4int fModuleArrayY;
 
 };
 

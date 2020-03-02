@@ -15,7 +15,9 @@ class G4TouchableHistory;
 class SensitiveDetector : public G4VSensitiveDetector 
 {
 	public:
-		SensitiveDetector(G4String SDuniqueName, int nx, int ny); 	// Constructor w/name of SD and array dim.
+		SensitiveDetector(G4String SDuniqueName, int nx, G4double pixelSizeX, G4double pixelSizeY,
+                          G4int pixelX, G4int pixelY,
+                          G4int n_sdd_per_module, G4int n_modules); 	// Constructor w/name of SD and array dim.
 		virtual ~SensitiveDetector();				    			// Destructor
 
 		// The G4VSensitiveDetector class has two methods, which may be overloaded
@@ -44,6 +46,12 @@ class SensitiveDetector : public G4VSensitiveDetector
 		G4int hitsCollectionID;
 		const int numberOfCellsInX;
 		const int numberOfCellsInY;
+        G4double psizeX;
+        G4double psizeY;
+        G4int npixelX;
+        G4int npixelY;
+        G4int nsdd;
+        G4int nmod;
 		int **CellID;
 		void initArray();
 }; 

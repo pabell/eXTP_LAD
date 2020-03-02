@@ -106,23 +106,26 @@ void UserRun::RecordEvent(const G4Event* event)
 		for(int i = 0; i < numberHitsSDD ; i++) {
 			DetectorHit* ahit = (*hitsCollectionSDD)[i];
 			G4double energyDeposit = ahit -> GetEnergyDeposit();
-            G4int    xpixel    = ahit -> GetSDDXID();
-		    G4int    ypixel    = ahit -> GetSDDYID();
+            G4int    xpixel = ahit -> GetXID();
+		    G4int    ypixel = ahit -> GetYID();
+            G4int    sddid  = ahit -> GetSDDID();
+            G4int    modid  = ahit -> GetModuleID();
 			G4double lastStepGlobalTime = ahit -> GetTime();
-            
 			
             // Write energy deposit and pixel in the ROOT file
             analysisManager->FillNtupleDColumn(0, eventID);
             analysisManager->FillNtupleDColumn(1, energyDeposit/keV);
             analysisManager->FillNtupleDColumn(2, xpixel);
             analysisManager->FillNtupleDColumn(3, ypixel);
-            analysisManager->FillNtupleDColumn(4, x_primary/cm);
-            analysisManager->FillNtupleDColumn(5, y_primary/cm);
-            analysisManager->FillNtupleDColumn(6, z_primary/cm);
-            analysisManager->FillNtupleDColumn(7, theta_primary/deg);
-            analysisManager->FillNtupleDColumn(8, phi_primary/deg);
-            analysisManager->FillNtupleDColumn(9, en_primary/keV);
-            analysisManager->FillNtupleDColumn(10, lastStepGlobalTime/ns);
+            analysisManager->FillNtupleDColumn(4, sddid);
+            analysisManager->FillNtupleDColumn(5, modid);
+            analysisManager->FillNtupleDColumn(6, x_primary/cm);
+            analysisManager->FillNtupleDColumn(7, y_primary/cm);
+            analysisManager->FillNtupleDColumn(8, z_primary/cm);
+            analysisManager->FillNtupleDColumn(9, theta_primary/deg);
+            analysisManager->FillNtupleDColumn(10, phi_primary/deg);
+            analysisManager->FillNtupleDColumn(11, en_primary/keV);
+            analysisManager->FillNtupleDColumn(12, lastStepGlobalTime/ns);
             analysisManager->AddNtupleRow();
             
 

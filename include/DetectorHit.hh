@@ -59,12 +59,16 @@ class DetectorHit : public G4VHit {
 		inline void AddEnergyDeposit(G4double energy) {energyDeposit += energy;}
 		inline G4double GetEnergyDeposit() 			  {return energyDeposit;}
 		
-		// The following methods allow to set and get the ID of the X sector:
-		inline void SetSDDXID(G4int id) 			  {XpixelID = id;}
-		inline G4int GetSDDXID() 					  {return XpixelID;}
-		// The following methods allow to set and get the ID of the Y sector:
-		inline void SetSDDYID(G4int id) 			  {YpixelID = id;}
-		inline G4int GetSDDYID() 					  {return YpixelID;}
+		// The following methods allow to set and get the IDs:
+		inline void SetXID(G4int id) 			  { x_ID = id;}
+		inline G4int GetXID() 					  {return x_ID;}
+        inline void SetYID(G4int id)              { y_ID = id;}
+        inline G4int GetYID()                     {return y_ID;}
+        inline void SetSDDID(G4int id)            { SDD_ID = id;}
+        inline G4int GetSDDID()                   {return SDD_ID;}
+        inline void SetModuleID(G4int id)         { module_ID = id;}
+        inline G4int GetModuleID()                {return module_ID;}
+
 	
 		// The following methods allow to set and get the time:
 		inline void SetTime(G4double t) 		      {globaltime = t;}
@@ -75,9 +79,13 @@ class DetectorHit : public G4VHit {
 		// The total energy deposit
 		G4double energyDeposit;
 		// The pixel ID in the X direction
-		G4int XpixelID;
+		G4int x_ID;
 		// The pixel ID in the Y direction
-		G4int YpixelID;
+		G4int y_ID;
+        // The SDD ID within the module
+        G4int SDD_ID;
+        // The module ID
+        G4int module_ID;
 		// The time of the last track step
 		G4double globaltime;
 	
