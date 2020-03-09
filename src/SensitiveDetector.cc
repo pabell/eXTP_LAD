@@ -99,14 +99,10 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory* ROhist)
 	
     G4int moduleID;
 
-    G4cout << "*** DEBUG: Hit energy deposit: " << energyDeposit/keV << G4endl;
-    G4cout << "*** DEBUG: replicaNumber: " << replicaNumber << G4endl;
     G4String motherName = track -> GetTouchable() ->GetVolume(1)->GetName();
     
     // Get the module ID from the mother physical volume name string
-    G4cout << "*** DEBUG: mother physical volume: " << motherName << G4endl;
     G4ConversionUtils::Convert(motherName.remove(0,8).remove(2,5), moduleID);
-    G4cout << "*** DEBUG: mother physical volume ID: " << moduleID << G4endl;
 
     
     // Get translation of the SDD wrt module frame of reference
@@ -118,35 +114,58 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory* ROhist)
     G4double angle;
     G4ThreeVector axis;
     rotationMatrix->getAngleAxis(angle,axis);
-    G4cout << "*** DEBUG: ROTATION angle, axis: " << angle/deg << " " << axis/cm << G4endl;
     // Get interaction position
     G4ThreeVector interactionPosition = track -> GetPosition();
 
     
-    G4cout << "*** DEBUG: SDD translation wrt module: " << volumeTranslation/cm << G4endl;
-    G4cout << "*** DEBUG: Module translation: " << motherVolumeTranslation/cm << G4endl;
-    G4cout << "*** DEBUG: Absolute SDD translation: " << (volumeTranslation+motherVolumeTranslation)/cm << G4endl;
-    G4cout << "*** DEBUG: interaction position: " << interactionPosition/cm << G4endl;
     
     // A bit of vector magic...(a few strange things with pointers, therefore to obtain direct matrix I have to invert twice)
     G4ThreeVector relativeInteractionPosition = (rotationMatrix->inverse().inverse()) * (interactionPosition-motherVolumeTranslation)-volumeTranslation;
-    G4cout << "*** DEBUG: Relative interaction position: " << relativeInteractionPosition/cm << G4endl;
 
 
     G4int row = 0;
     G4int col = 0;
     if (relativeInteractionPosition.y() <= 0) {row = 1;} // True only with 2 pixels in Y TODO: generalize
-    G4cout << "*** DEBUG: Row " << row << G4endl;
     
-    col = (G4int) relativeInteractionPosition.x()/psizeX + npixelX/2;
-    G4cout << "*** DEBUG: Col " << col << G4endl;
+    
+    // Sometimes (happens only with particles interacting at the very boundary of the SDD, afaik, don't know why)
+    // volumeTranslation doesn't return the correct translation of the SDD wrt the module, therefore col goes above the meaningful boundaries.
+    // Since it is a very small percentage of events, I'll reassign the col value.
+    G4bool outOfBoundary = false;
+    if (relativeInteractionPosition.x() < -psizeX*npixelX/2)
+    {
+        relativeInteractionPosition.setX(-psizeX*npixelX/2);
+        outOfBoundary = true;
+    }
+    else if (relativeInteractionPosition.x() > psizeX*npixelX/2)
+    {
+        relativeInteractionPosition.setX(psizeX*(npixelX-1)/2);
+        outOfBoundary = true;
+    }
+    
+    col = (G4int) ((relativeInteractionPosition.x() + psizeX*npixelX/2)/psizeX);
 
-    G4int copyIDinY =  0;
+    if(outOfBoundary)
+    {
+            G4cout << "*** DEBUG: Hit energy deposit: " << energyDeposit/keV << G4endl;
+            G4cout << "*** DEBUG: replicaNumber: " << replicaNumber << G4endl;
+            G4cout << "*** DEBUG: mother physical volume: " << motherName << G4endl;
+            G4cout << "*** DEBUG: mother physical volume ID: " << moduleID << G4endl;
+            G4cout << "*** DEBUG: ROTATION angle, axis: " << angle/deg << " " << axis/cm << G4endl;
+            G4cout << "*** DEBUG: SDD translation wrt module: " << volumeTranslation/cm << G4endl;
+            G4cout << "*** DEBUG: Module translation: " << motherVolumeTranslation/cm << G4endl;
+            G4cout << "*** DEBUG: Absolute SDD translation: " << (volumeTranslation+motherVolumeTranslation)/cm << G4endl;
+            G4cout << "*** DEBUG: interaction position: " << interactionPosition/cm << G4endl;
+            G4cout << "*** DEBUG: Relative interaction position: " << relativeInteractionPosition/cm << G4endl;
+            G4cout << "*** DEBUG: Row " << row << G4endl;
+            G4cout << "*** DEBUG: Col " << col << G4endl;
+    }
+    if(col < 0){col = 0;}
+    else if(col >= npixelX) {col = npixelX-1;}
 
     G4int address = col + row*npixelX + replicaNumber*(npixelX*npixelY) + moduleID*(npixelX*npixelY*nsdd);
-    G4cout << "*** DEBUG: Global address " << address << G4endl;
 
-	if(CellID[address][copyIDinY]==-1) // if no energy depositions before in this cell
+	if(CellID[address][0]==-1) // if no energy depositions before in this cell
 	{
 		// Now we create a new hit object, corresponding to the cell, and fill it with values to be stored
 		DetectorHit* hit = new DetectorHit();
@@ -157,12 +176,12 @@ G4bool SensitiveDetector::ProcessHits(G4Step* step, G4TouchableHistory* ROhist)
         hit -> SetModuleID(moduleID);
 		hit -> SetTime(globaltime);
 		G4int icell = hitsCollection -> insert(hit);
-		CellID[address][copyIDinY] = icell - 1;
+		CellID[address][0] = icell - 1;
 	} 
 	else // if energy depositions before in this cell
 	{
-		(*hitsCollection)[CellID[address][copyIDinY]] -> AddEnergyDeposit(energyDeposit);
-		(*hitsCollection)[CellID[address][copyIDinY]] -> SetTime(globaltime);
+		(*hitsCollection)[CellID[address][0]] -> AddEnergyDeposit(energyDeposit);
+		(*hitsCollection)[CellID[address][0]] -> SetTime(globaltime);
 	}
 	return true;
 }

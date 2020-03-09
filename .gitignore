@@ -10,3 +10,5 @@ Debug/*
 extp_lad.build/*
 extp_lad.xcodeproj/*
 *.cmake
+run_background*.py
+background_*/
