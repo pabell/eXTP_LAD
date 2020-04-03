@@ -265,6 +265,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 		G4LogicalVolume* pcbB_log;
 		G4LogicalVolume* platePcbC_log;
 		G4LogicalVolume* pcbC_log;
+        G4LogicalVolume* sideframe_log;
 		G4LogicalVolume* backshieldA_log;
 		G4LogicalVolume* backshieldB_log;
 
@@ -754,6 +755,48 @@ class DetectorConstruction : public G4VUserDetectorConstruction
         G4VPhysicalVolume* platePcbC38_phys;
         G4VPhysicalVolume* platePcbC39_phys;
 		G4VPhysicalVolume* pcbC_phys;
+    
+        G4VPhysicalVolume* sideframe00_phys;
+        G4VPhysicalVolume* sideframe01_phys;
+        G4VPhysicalVolume* sideframe02_phys;
+        G4VPhysicalVolume* sideframe03_phys;
+        G4VPhysicalVolume* sideframe04_phys;
+        G4VPhysicalVolume* sideframe05_phys;
+        G4VPhysicalVolume* sideframe06_phys;
+        G4VPhysicalVolume* sideframe07_phys;
+        G4VPhysicalVolume* sideframe08_phys;
+        G4VPhysicalVolume* sideframe09_phys;
+        G4VPhysicalVolume* sideframe10_phys;
+        G4VPhysicalVolume* sideframe11_phys;
+        G4VPhysicalVolume* sideframe12_phys;
+        G4VPhysicalVolume* sideframe13_phys;
+        G4VPhysicalVolume* sideframe14_phys;
+        G4VPhysicalVolume* sideframe15_phys;
+        G4VPhysicalVolume* sideframe16_phys;
+        G4VPhysicalVolume* sideframe17_phys;
+        G4VPhysicalVolume* sideframe18_phys;
+        G4VPhysicalVolume* sideframe19_phys;
+        G4VPhysicalVolume* sideframe20_phys;
+        G4VPhysicalVolume* sideframe21_phys;
+        G4VPhysicalVolume* sideframe22_phys;
+        G4VPhysicalVolume* sideframe23_phys;
+        G4VPhysicalVolume* sideframe24_phys;
+        G4VPhysicalVolume* sideframe25_phys;
+        G4VPhysicalVolume* sideframe26_phys;
+        G4VPhysicalVolume* sideframe27_phys;
+        G4VPhysicalVolume* sideframe28_phys;
+        G4VPhysicalVolume* sideframe29_phys;
+        G4VPhysicalVolume* sideframe30_phys;
+        G4VPhysicalVolume* sideframe31_phys;
+        G4VPhysicalVolume* sideframe32_phys;
+        G4VPhysicalVolume* sideframe33_phys;
+        G4VPhysicalVolume* sideframe34_phys;
+        G4VPhysicalVolume* sideframe35_phys;
+        G4VPhysicalVolume* sideframe36_phys;
+        G4VPhysicalVolume* sideframe37_phys;
+        G4VPhysicalVolume* sideframe38_phys;
+        G4VPhysicalVolume* sideframe39_phys;
+    
     
 		G4VPhysicalVolume* backshieldA00_phys;
         G4VPhysicalVolume* backshieldA01_phys;

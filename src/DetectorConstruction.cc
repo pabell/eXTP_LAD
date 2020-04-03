@@ -68,6 +68,7 @@ DetectorConstruction::DetectorConstruction()
 	pcbB_log(0),
 	platePcbC_log(0),
 	pcbC_log(0),
+    sideframe_log(0),
 	backshieldA_log(0),
 	backshieldB_log(0),
 	opticalbench_log(0),
@@ -535,6 +536,46 @@ DetectorConstruction::DetectorConstruction()
     platePcbC38_phys(0),
     platePcbC39_phys(0),
 	pcbC_phys(0),
+    sideframe00_phys(0),
+    sideframe01_phys(0),
+    sideframe02_phys(0),
+    sideframe03_phys(0),
+    sideframe04_phys(0),
+    sideframe05_phys(0),
+    sideframe06_phys(0),
+    sideframe07_phys(0),
+    sideframe08_phys(0),
+    sideframe09_phys(0),
+    sideframe10_phys(0),
+    sideframe11_phys(0),
+    sideframe12_phys(0),
+    sideframe13_phys(0),
+    sideframe14_phys(0),
+    sideframe15_phys(0),
+    sideframe16_phys(0),
+    sideframe17_phys(0),
+    sideframe18_phys(0),
+    sideframe19_phys(0),
+    sideframe20_phys(0),
+    sideframe21_phys(0),
+    sideframe22_phys(0),
+    sideframe23_phys(0),
+    sideframe24_phys(0),
+    sideframe25_phys(0),
+    sideframe26_phys(0),
+    sideframe27_phys(0),
+    sideframe28_phys(0),
+    sideframe29_phys(0),
+    sideframe30_phys(0),
+    sideframe31_phys(0),
+    sideframe32_phys(0),
+    sideframe33_phys(0),
+    sideframe34_phys(0),
+    sideframe35_phys(0),
+    sideframe36_phys(0),
+    sideframe37_phys(0),
+    sideframe38_phys(0),
+    sideframe39_phys(0),
     backshieldA00_phys(0),
     backshieldA01_phys(0),
     backshieldA02_phys(0),
@@ -682,7 +723,7 @@ G4ThreeVector DetectorConstruction::moduleLocation(G4int moduleID, G4double inne
     G4double outerRingSpacing = (360*deg - outerRingGap)/(n_outerRingModules);
 
 
-    G4double outerRingIsolatedDistance = outerRingRadius -  20*cm;
+    G4double outerRingIsolatedDistance = outerRingRadius - 30*cm;
     
     if(moduleID < 20) // Inner ring
     {
@@ -697,8 +738,9 @@ G4ThreeVector DetectorConstruction::moduleLocation(G4int moduleID, G4double inne
         xMod = outerRingRadius * cos( (moduleID+1-20)*outerRingSpacing/rad + 3.1415936/2. + (outerRingGap/2.)/rad);
         yMod = outerRingRadius * sin( (moduleID+1-20)*outerRingSpacing/rad + 3.1415936/2. + (outerRingGap/2.)/rad);
     }
+// DA SISTEMARE A MANO
     else if (moduleID == 36){
-        xMod = 100*cm;
+        xMod = 75*cm;
         yMod = outerRingIsolatedDistance;
     }
     else if (moduleID == 37){
@@ -710,7 +752,7 @@ G4ThreeVector DetectorConstruction::moduleLocation(G4int moduleID, G4double inne
         yMod = outerRingIsolatedDistance-15*cm;
     }
     else if (moduleID == 39){
-        xMod = -100*cm;
+        xMod = -75*cm;
         yMod = outerRingIsolatedDistance;
     }
     else {
@@ -1255,11 +1297,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double spacing_sdd_x = (moduleframe_side_x - internalframe_side_x*2 - n_sdd_x*sdd_x) / (n_sdd_x-1);
     G4double spacing_sdd_y = (moduleframe_side_y - internalframe_side_y*2 - n_sdd_y*sdd_y) / (n_sdd_y-1);
 
-    G4double plate_z = thermalblanketA_thick + thermalblanketB_thick + coll_thick + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick
-                        + sdd_thick + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick;
-    
-    G4double bus_offset_z = sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick;
+//    G4double backshieldGap_z = 66.9*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
+    G4double backshieldGap_z = 37.2*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
 
+    G4double plate_z = thermalblanketA_thick + thermalblanketB_thick + coll_thick + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick
+                        + sdd_thick + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick + backshieldGap_z;
+    
+    G4double bus_offset_z = sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick + backshieldGap_z;
+    
+    G4double mountingPlateGap_z = 86.0*cm;
+
+    
     G4cout << "MODULE CONFIGURATION:" << G4endl;
     G4cout << "No. of SDDs per X side: "<< n_sdd_x << G4endl;
     G4cout << "No. of SDDs per Y side: "<< n_sdd_y << G4endl;
@@ -1276,7 +1324,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4cout << "Spacing btw. SDDs on Y side (mm): "<< spacing_sdd_y/mm << G4endl;
     G4cout << "Module thickness (mm): "<< plate_z/mm << G4endl;
 
-    G4double offsetRingRadius = 10*cm; // TODO: do not hardcode offset
+    G4double offsetRingRadius = 3*cm; // TODO: do not hardcode offset?
     G4double innerRingRadius = tower_diameter/2. + moduleframe_side_x/2. + offsetRingRadius;
     G4double outerRingRadius = innerRingRadius +  moduleframe_side_x/2. +  moduleframe_side_y/2. + offsetRingRadius;
 
@@ -4698,7 +4746,311 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                       pcbCParam);           // The parametrisation
 
 	
-	// 12. Backshield A
+    // 12. Side frame on gap
+    G4double sideframe_x = moduleframe_side_x;
+    G4double sideframe_y = moduleframe_side_y;
+    G4double sideframe_z = backshieldGap_z;
+    
+    G4double sideframe_width = 2.5*mm; // TODO: do not hardcode
+    
+    G4Box* sideframe_box_external = new G4Box("sideframe_box",
+                                              sideframe_x/2., sideframe_y/2., sideframe_z/2.);
+    G4Box* sideframe_box_internal = new G4Box("sideframe_box",
+                                              (sideframe_x-2*sideframe_width)/2., (sideframe_y-2*sideframe_width)/2., sideframe_z/2.);
+    
+    G4VSolid* sideframe_box = new G4SubtractionSolid("sideframe_box", sideframe_box_external, sideframe_box_internal);
+    
+    sideframe_log = new G4LogicalVolume(sideframe_box,
+                                        moduleframeMaterial, "sideframe_log", 0, 0, 0);
+    
+    
+    
+    G4double sideframe_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick) - backshieldGap_z/2.;
+    
+    sideframe00_phys = new G4PVPlacement(moduleRotation(0),
+                                         G4ThreeVector(moduleLocation(0,innerRingRadius, outerRingRadius).x(), moduleLocation(0,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe00_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    
+    sideframe01_phys = new G4PVPlacement(moduleRotation(1),
+                                         G4ThreeVector(moduleLocation(1,innerRingRadius, outerRingRadius).x(), moduleLocation(1,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe01_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe02_phys = new G4PVPlacement(moduleRotation(2),
+                                         G4ThreeVector(moduleLocation(2,innerRingRadius, outerRingRadius).x(), moduleLocation(2,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe02_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe03_phys = new G4PVPlacement(moduleRotation(3),
+                                         G4ThreeVector(moduleLocation(3,innerRingRadius, outerRingRadius).x(), moduleLocation(3,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe03_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe04_phys = new G4PVPlacement(moduleRotation(4),
+                                         G4ThreeVector(moduleLocation(4,innerRingRadius, outerRingRadius).x(), moduleLocation(4,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe04_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe05_phys = new G4PVPlacement(moduleRotation(5),
+                                         G4ThreeVector(moduleLocation(5,innerRingRadius, outerRingRadius).x(), moduleLocation(5,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe05_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe06_phys = new G4PVPlacement(moduleRotation(6),
+                                         G4ThreeVector(moduleLocation(6,innerRingRadius, outerRingRadius).x(), moduleLocation(6,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe06_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe07_phys = new G4PVPlacement(moduleRotation(7),
+                                         G4ThreeVector(moduleLocation(7,innerRingRadius, outerRingRadius).x(), moduleLocation(7,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe07_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe08_phys = new G4PVPlacement(moduleRotation(8),
+                                         G4ThreeVector(moduleLocation(8,innerRingRadius, outerRingRadius).x(), moduleLocation(8,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe08_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe09_phys = new G4PVPlacement(moduleRotation(9),
+                                         G4ThreeVector(moduleLocation(9,innerRingRadius, outerRingRadius).x(), moduleLocation(9,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe09_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe10_phys = new G4PVPlacement(moduleRotation(10),
+                                         G4ThreeVector(moduleLocation(10,innerRingRadius, outerRingRadius).x(), moduleLocation(10,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe10_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe11_phys = new G4PVPlacement(moduleRotation(11),
+                                         G4ThreeVector(moduleLocation(11,innerRingRadius, outerRingRadius).x(), moduleLocation(11,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe11_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe12_phys = new G4PVPlacement(moduleRotation(12),
+                                         G4ThreeVector(moduleLocation(12,innerRingRadius, outerRingRadius).x(), moduleLocation(12,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe12_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe13_phys = new G4PVPlacement(moduleRotation(13),
+                                         G4ThreeVector(moduleLocation(13,innerRingRadius, outerRingRadius).x(), moduleLocation(13,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe13_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe14_phys = new G4PVPlacement(moduleRotation(14),
+                                         G4ThreeVector(moduleLocation(14,innerRingRadius, outerRingRadius).x(), moduleLocation(14,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe14_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe15_phys = new G4PVPlacement(moduleRotation(15),
+                                         G4ThreeVector(moduleLocation(15,innerRingRadius, outerRingRadius).x(), moduleLocation(15,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe15_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe16_phys = new G4PVPlacement(moduleRotation(16),
+                                         G4ThreeVector(moduleLocation(16,innerRingRadius, outerRingRadius).x(), moduleLocation(16,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe16_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe17_phys = new G4PVPlacement(moduleRotation(17),
+                                         G4ThreeVector(moduleLocation(17,innerRingRadius, outerRingRadius).x(), moduleLocation(17,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe17_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe18_phys = new G4PVPlacement(moduleRotation(18),
+                                         G4ThreeVector(moduleLocation(18,innerRingRadius, outerRingRadius).x(), moduleLocation(18,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe18_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe19_phys = new G4PVPlacement(moduleRotation(19),
+                                         G4ThreeVector(moduleLocation(19,innerRingRadius, outerRingRadius).x(), moduleLocation(19,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe19_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe20_phys = new G4PVPlacement(moduleRotation(20),
+                                         G4ThreeVector(moduleLocation(20,innerRingRadius, outerRingRadius).x(), moduleLocation(20,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe20_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe21_phys = new G4PVPlacement(moduleRotation(21),
+                                         G4ThreeVector(moduleLocation(21,innerRingRadius, outerRingRadius).x(), moduleLocation(21,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe21_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe22_phys = new G4PVPlacement(moduleRotation(22),
+                                         G4ThreeVector(moduleLocation(22,innerRingRadius, outerRingRadius).x(), moduleLocation(22,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe22_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe23_phys = new G4PVPlacement(moduleRotation(23),
+                                         G4ThreeVector(moduleLocation(23,innerRingRadius, outerRingRadius).x(), moduleLocation(23,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe23_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe24_phys = new G4PVPlacement(moduleRotation(24),
+                                         G4ThreeVector(moduleLocation(24,innerRingRadius, outerRingRadius).x(), moduleLocation(24,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe24_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe25_phys = new G4PVPlacement(moduleRotation(25),
+                                         G4ThreeVector(moduleLocation(25,innerRingRadius, outerRingRadius).x(), moduleLocation(25,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe25_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe26_phys = new G4PVPlacement(moduleRotation(26),
+                                         G4ThreeVector(moduleLocation(26,innerRingRadius, outerRingRadius).x(), moduleLocation(26,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe26_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe27_phys = new G4PVPlacement(moduleRotation(27),
+                                         G4ThreeVector(moduleLocation(27,innerRingRadius, outerRingRadius).x(), moduleLocation(27,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe27_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe28_phys = new G4PVPlacement(moduleRotation(28),
+                                         G4ThreeVector(moduleLocation(28,innerRingRadius, outerRingRadius).x(), moduleLocation(28,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe28_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe29_phys = new G4PVPlacement(moduleRotation(29),
+                                         G4ThreeVector(moduleLocation(29,innerRingRadius, outerRingRadius).x(), moduleLocation(29,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe29_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe30_phys = new G4PVPlacement(moduleRotation(30),
+                                         G4ThreeVector(moduleLocation(30,innerRingRadius, outerRingRadius).x(), moduleLocation(30,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe30_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe31_phys = new G4PVPlacement(moduleRotation(31),
+                                         G4ThreeVector(moduleLocation(31,innerRingRadius, outerRingRadius).x(), moduleLocation(31,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe31_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe32_phys = new G4PVPlacement(moduleRotation(32),
+                                         G4ThreeVector(moduleLocation(32,innerRingRadius, outerRingRadius).x(), moduleLocation(32,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe32_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe33_phys = new G4PVPlacement(moduleRotation(33),
+                                         G4ThreeVector(moduleLocation(33,innerRingRadius, outerRingRadius).x(), moduleLocation(33,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe33_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe34_phys = new G4PVPlacement(moduleRotation(34),
+                                         G4ThreeVector(moduleLocation(34,innerRingRadius, outerRingRadius).x(), moduleLocation(34,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe34_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe35_phys = new G4PVPlacement(moduleRotation(35),
+                                         G4ThreeVector(moduleLocation(35,innerRingRadius, outerRingRadius).x(), moduleLocation(35,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe35_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe36_phys = new G4PVPlacement(moduleRotation(36),
+                                         G4ThreeVector(moduleLocation(36,innerRingRadius, outerRingRadius).x(), moduleLocation(36,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe36_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe37_phys = new G4PVPlacement(moduleRotation(37),
+                                         G4ThreeVector(moduleLocation(37,innerRingRadius, outerRingRadius).x(), moduleLocation(37,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe37_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe38_phys = new G4PVPlacement(moduleRotation(38),
+                                         G4ThreeVector(moduleLocation(38,innerRingRadius, outerRingRadius).x(), moduleLocation(38,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe38_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    sideframe39_phys = new G4PVPlacement(moduleRotation(39),
+                                         G4ThreeVector(moduleLocation(39,innerRingRadius, outerRingRadius).x(), moduleLocation(39,innerRingRadius, outerRingRadius).y(),sideframe_loc_z),
+                                         sideframe_log,
+                                         "sideframe39_phys",
+                                         experimentalHall_log,
+                                         false,
+                                         0);
+    
+
+	// 13. Backshield A
     G4double backshieldA_x = moduleframe_side_x;
     G4double backshieldA_y = moduleframe_side_y;
     G4double backshieldA_z = backshieldA_thick;
@@ -4708,7 +5060,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     backshieldA_log = new G4LogicalVolume(backshieldA_box,
                                         backshieldAMaterial, "backshieldA_log", 0, 0, 0);
-    G4double backshieldA_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick/2.);
+    G4double backshieldA_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick/2.) - backshieldGap_z;
     
     backshieldA00_phys = new G4PVPlacement(moduleRotation(0),
                                            G4ThreeVector(moduleLocation(0,innerRingRadius, outerRingRadius).x(), moduleLocation(0,innerRingRadius, outerRingRadius).y(),backshieldA_loc_z),
@@ -4992,7 +5344,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                            false,
                                            0);
 
-    // 13. Backshield B
+    // 14. Backshield B
     G4double backshieldB_x = moduleframe_side_x;
     G4double backshieldB_y = moduleframe_side_y;
     G4double backshieldB_z = backshieldB_thick;
@@ -5002,7 +5354,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     backshieldB_log = new G4LogicalVolume(backshieldB_box,
                                           backshieldBMaterial, "backshieldB_log", 0, 0, 0);
-    G4double backshieldB_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick/2.);
+    G4double backshieldB_loc_z = -(sdd_thick/2. + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick/2.) - backshieldGap_z;
     
     backshieldB00_phys = new G4PVPlacement(moduleRotation(0),
                                            G4ThreeVector(moduleLocation(0,innerRingRadius, outerRingRadius).x(), moduleLocation(0,innerRingRadius, outerRingRadius).y(),backshieldB_loc_z),
@@ -5291,7 +5643,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     
     
-    // 14. SATELLITE BUS
+    // 15. SATELLITE BUS
 
 	if (flag_satellitebus == true) {
 		// a. Optical bench
@@ -5322,7 +5674,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		// Physical
 		G4double opticalbenchPos_x = 0*cm;
 		G4double opticalbenchPos_y = 0*cm;
-		G4double opticalbenchPos_z = - bus_offset_z - mountingplate_thick;
+		G4double opticalbenchPos_z = - bus_offset_z - mountingPlateGap_z - mountingplate_thick;
 //        G4RotationMatrix* opticalbenchRot = new G4RotationMatrix;
 //        opticalbenchRot->rotateZ(22.5*deg);
 		opticalbench_phys = new G4PVPlacement(0,
@@ -5347,7 +5699,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 		// Physical
 		G4double towerPos_x = 0*cm;
 		G4double towerPos_y = 0*cm;
-		G4double towerPos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height/2. ;
+		G4double towerPos_z = -bus_offset_z +  optics_thick + mountingPlateGap_z - mountingplate_thick - opticalbench_thick - tower_height/2. ;
 		tower_phys = new G4PVPlacement(0,
 									  G4ThreeVector(towerPos_x, towerPos_y, towerPos_z),
 									  tower_log,
@@ -5358,25 +5710,34 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         
 		// c. Service module (focal plane assembly)
 		// Solid
-	    const G4double Z_sm[2]= {0*cm, -servicemodule_thick};
-	    const G4double rInner_sm[2]= {50*cm, 50*cm};
-	    const G4double rOuter_sm[2]= {servicemodule_side*sqrt(3)/2., servicemodule_side*sqrt(3)/2.};
-	    G4Polyhedra* servicemodule_Polyhedra = new G4Polyhedra("servicemodule_Polyhedra",
-												0.*deg,
-												360.*deg,
-												6,
-												2,
-												Z_sm, 
-												rInner_sm, 
-												rOuter_sm);
+//        const G4double Z_sm[2]= {0*cm, -servicemodule_thick};
+//        const G4double rInner_sm[2]= {50*cm, 50*cm};
+//        const G4double rOuter_sm[2]= {servicemodule_side*sqrt(3)/2., servicemodule_side*sqrt(3)/2.};
+//        G4Polyhedra* servicemodule_Polyhedra = new G4Polyhedra("servicemodule_Polyhedra",
+//                                                0.*deg,
+//                                                360.*deg,
+//                                                6,
+//                                                2,
+//                                                Z_sm,
+//                                                rInner_sm,
+//                                                rOuter_sm);
+        
+        G4VSolid* servicemodule_Tubs = new G4Tubs("servicemodule_Tubs",
+                                          0.,     // inner radius
+                                          tower_diameter/2.,         // outer radius
+                                          servicemodule_thick/2.,                 // height
+                                          0.0 * deg, 360.0 * deg); // segment angles
+
 		// Logical
-		servicemodule_log = new G4LogicalVolume(servicemodule_Polyhedra,
-		                                       servicemoduleMaterial, "servicemodule_log", 0, 0, 0);
-	
+//        servicemodule_log = new G4LogicalVolume(servicemodule_Polyhedra,
+//                                               servicemoduleMaterial, "servicemodule_log", 0, 0, 0);
+        servicemodule_log = new G4LogicalVolume(servicemodule_Tubs,
+                                                servicemoduleMaterial, "servicemodule_log", 0, 0, 0);
+
 		// Physical
 		G4double servicemodulePos_x = 0*cm;
 		G4double servicemodulePos_y = 0*cm;
-		G4double servicemodulePos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height ;
+		G4double servicemodulePos_z = towerPos_z - tower_height/2. - servicemodule_thick/2. ;
 //        G4RotationMatrix* servicemoduleRot = new G4RotationMatrix;
 //        servicemoduleRot->rotateZ(30*deg);
 		servicemodule_phys = new G4PVPlacement(0,
@@ -5398,7 +5759,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         G4double solarpanelGap = 118.2 *cm;
         G4double solarpanelPos_x =  tower_diameter/2 + solarpanelGap + solarpanel_side_x/2.;
         G4double solarpanelPos_y = 0.*cm;
-        G4double solarpanelPos_z = - bus_offset_z - mountingplate_thick - opticalbench_thick - tower_height/2.;
+        G4double solarpanelPos_z = - bus_offset_z + mountingPlateGap_z - mountingplate_thick - opticalbench_thick - tower_height/2.;
         G4RotationMatrix* solarpanelRot = new G4RotationMatrix;
         solarpanelRot->rotateX(90*deg);
         
@@ -5433,7 +5794,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                         opticalbenchcoverMaterial, "opticalbenchcover_log", 0, 0, 0);
         // Physical
         G4double opticalbenchcoverPos_x = 0*cm;
-        G4double opticalbenchcoverPos_y = mountingplate_diameter/2. + opticalbenchcover_thick;
+        G4double opticalbenchcoverPos_y = mountingplate_diameter/2. + opticalbenchcover_thick -35*cm;
         G4double opticalbenchcoverPos_z = (mountingplate_diameter-tower_diameter)/2 + opticalbenchcover_diameter/2. ;
         G4RotationMatrix* opticalbenchcoverRot = new G4RotationMatrix;
         opticalbenchcoverRot->rotateX(90*deg);
@@ -5454,7 +5815,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                                     sunshadeMaterial, "sunshade_log", 0, 0, 0);
         // Physical
         G4double sunshadePos_x = 0*cm;
-        G4double sunshadePos_y = mountingplate_diameter/2. + opticalbenchcover_thick + sunshade_thick;
+        G4double sunshadePos_y = mountingplate_diameter/2. + opticalbenchcover_thick + 2*sunshade_thick -35*cm;
         G4double sunshadePos_z = sunshade_side_y/2. + mountingplate_thick;
         G4RotationMatrix* sunshadeRot = new G4RotationMatrix;
         sunshadeRot->rotateX(90*deg);
@@ -5502,7 +5863,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                                 opticsMaterial, "optics_log", 0, 0, 0);
         // Physical
         G4double optics_OuterRing_Pos_x = tower_diameter/2.-optics_diameter/2. - 5*cm; // TODO: Hardcoded distance btw. optics and tube walls?
-        G4double optics_InnerRing_Pos_x = optics_diameter/2. + 20*cm; // TODO: Hardcoded distance btw. optics and tube center?
+        G4double optics_InnerRing_Pos_x = optics_diameter/2. + 5*cm; // TODO: Hardcoded distance btw. optics and tube center?
         G4double opticsPos_z = -bus_offset_z - optics_thick/2. ;
         optics00_phys = new G4PVPlacement(0,
                                           G4ThreeVector(optics_OuterRing_Pos_x*cos(0.*36.*3.1415926/180.), optics_OuterRing_Pos_x*sin(0.*36.*3.1415926/180.), opticsPos_z),
@@ -5612,7 +5973,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         // Physical
         G4double wfmdummyA_Pos_x = wfmdummy_maskside/2.;
         G4double wfmdummyA_Pos_y = -(mountingplate_diameter/2.-wfmdummy_maskside/2.);
-        G4double wfmdummyA_Pos_z = -bus_offset_z + wfmdummy_height/2. ;
+        G4double wfmdummyA_Pos_z = -bus_offset_z -mountingplate_thick - wfmdummy_height/2. ;
         wfmdummy00_phys = new G4PVPlacement(0,
                                                G4ThreeVector(wfmdummyA_Pos_x, wfmdummyA_Pos_y, wfmdummyA_Pos_z),
                                                wfmdummy_log,
@@ -5627,37 +5988,39 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
                                             experimentalHall_log,
                                             false,
                                             0);
-        G4double wfmdummyB_Pos_x = -opticalbench_side;
+        G4double wfmdummyB_Pos_x = -mountingplate_diameter/2.;
         G4double wfmdummyB_Pos_y = -wfmdummy_maskside/2.;
+        G4double wfmdummyB_Pos_z = -bus_offset_z - mountingPlateGap_z + wfmdummy_height/2. -20*cm ;
         G4RotationMatrix* wfmdummyRot1 = new G4RotationMatrix;
         wfmdummyRot1->rotateY(60*deg);
         wfmdummy02_phys = new G4PVPlacement(wfmdummyRot1,
-                                            G4ThreeVector(wfmdummyB_Pos_x, wfmdummyB_Pos_y, wfmdummyA_Pos_z),
+                                            G4ThreeVector(wfmdummyB_Pos_x, wfmdummyB_Pos_y, wfmdummyB_Pos_z),
                                             wfmdummy_log,
                                             "wfmdummy02_phys",
                                             experimentalHall_log,
                                             false,
                                             0);
         wfmdummy03_phys = new G4PVPlacement(wfmdummyRot1,
-                                            G4ThreeVector(wfmdummyB_Pos_x, -wfmdummyB_Pos_y, wfmdummyA_Pos_z),
+                                            G4ThreeVector(wfmdummyB_Pos_x, -wfmdummyB_Pos_y, wfmdummyB_Pos_z),
                                             wfmdummy_log,
                                             "wfmdummy03_phys",
                                             experimentalHall_log,
                                             false,
                                             0);
-        G4double wfmdummyC_Pos_x = +opticalbench_side;
-        G4double wfmdummyC_Pos_y = -wfmdummy_maskside/2.;
+        G4double wfmdummyC_Pos_x = -wfmdummyB_Pos_x;
+        G4double wfmdummyC_Pos_y = wfmdummyB_Pos_y;
+        G4double wfmdummyC_Pos_z = wfmdummyB_Pos_z ;
         G4RotationMatrix* wfmdummyRot2 = new G4RotationMatrix;
         wfmdummyRot2->rotateY(-60*deg);
         wfmdummy04_phys = new G4PVPlacement(wfmdummyRot2,
-                                            G4ThreeVector(wfmdummyC_Pos_x, wfmdummyC_Pos_y, wfmdummyA_Pos_z),
+                                            G4ThreeVector(wfmdummyC_Pos_x, wfmdummyC_Pos_y, wfmdummyC_Pos_z),
                                             wfmdummy_log,
                                             "wfmdummy04_phys",
                                             experimentalHall_log,
                                             false,
                                             0);
         wfmdummy05_phys = new G4PVPlacement(wfmdummyRot2,
-                                            G4ThreeVector(wfmdummyC_Pos_x, -wfmdummyC_Pos_y, wfmdummyA_Pos_z),
+                                            G4ThreeVector(wfmdummyC_Pos_x, -wfmdummyC_Pos_y, wfmdummyC_Pos_z),
                                             wfmdummy_log,
                                             "wfmdummy05_phys",
                                             experimentalHall_log,
@@ -5718,6 +6081,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 	G4VisAttributes* PCBCVisAtt= new G4VisAttributes(green);
     pcbC_log -> SetVisAttributes(PCBCVisAtt);
 	
+    G4VisAttributes* SideframeVisAtt= new G4VisAttributes(blue);
+    sideframe_log -> SetVisAttributes(SideframeVisAtt);
+
 	G4VisAttributes* BackshieldAVisAtt= new G4VisAttributes(magenta);
     backshieldA_log -> SetVisAttributes(BackshieldAVisAtt);
 	
