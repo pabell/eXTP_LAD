@@ -12,3 +12,4 @@ extp_lad.xcodeproj/*
 *.cmake
 run_background*.py
 background_*/
+test.py

@@ -1297,8 +1297,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4double spacing_sdd_x = (moduleframe_side_x - internalframe_side_x*2 - n_sdd_x*sdd_x) / (n_sdd_x-1);
     G4double spacing_sdd_y = (moduleframe_side_y - internalframe_side_y*2 - n_sdd_y*sdd_y) / (n_sdd_y-1);
 
-//    G4double backshieldGap_z = 66.9*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
-    G4double backshieldGap_z = 37.2*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
+    G4double backshieldGap_z = 66.9*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
+//    G4double backshieldGap_z = 37.2*mm - (pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick);
 
     G4double plate_z = thermalblanketA_thick + thermalblanketB_thick + coll_thick + deadlayerA_thick + deadlayerB_thick + deadlayerC_thick
                         + sdd_thick + pcbs_thick + pcbA_thick + pcbB_thick + pcbC_thick + backshieldA_thick + backshieldB_thick + backshieldGap_z;
